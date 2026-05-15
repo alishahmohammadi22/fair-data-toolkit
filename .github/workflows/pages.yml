@@ -1,10 +1,7 @@
 name: Tests & GitHub Pages
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:  # disabled: trigger manually only
 
 permissions:
   contents: read
