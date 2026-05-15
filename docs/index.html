@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAIR Data Toolkit — Ali Shahmohammadi</title>
+  <meta name="description" content="FAIR Data Maturity Framework for Pharmaceutical R&D. Python toolkit and article series covering the RDA FAIR Maturity Model (41 indicators) and Pistoia Alliance FAIR Maturity Matrix." />
+  <style>
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --border:   #30363d;
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --accent:   #58a6ff;
+      --green:    #3fb950;
+      --orange:   #f78166;
+      --yellow:   #d29922;
+      --purple:   #bc8cff;
+      --teal:     #39d353;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.65; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; }
+    .nav-brand { font-weight: 700; font-size: 1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); font-size: 0.9rem; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* ── Hero ── */
+    .hero { padding: 5rem 2rem 4rem; text-align: center; background: linear-gradient(180deg, #0d1117 0%, #12191f 100%); border-bottom: 1px solid var(--border); }
+    .hero-tag { display: inline-block; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: var(--accent); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; padding: 0.3rem 0.8rem; border-radius: 20px; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 2rem; }
+    .hero-cta { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .btn { padding: 0.65rem 1.4rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .btn-primary { background: var(--accent); color: #0d1117; }
+    .btn-primary:hover { background: #79c0ff; text-decoration: none; color: #0d1117; }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); text-decoration: none; }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .section { padding: 4rem 0; }
+    .section-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .section-sub { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; }
+
+    /* ── Problem / Solution ── */
+    .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    @media (max-width: 700px) { .ps-grid { grid-template-columns: 1fr; } }
+    .ps-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; }
+    .ps-card h3 { font-size: 1rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; }
+    .ps-card.problem h3 { color: var(--orange); }
+    .ps-card.solution h3 { color: var(--green); }
+    .ps-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .ps-card li { display: flex; gap: 0.7rem; font-size: 0.95rem; color: var(--muted); }
+    .ps-card li::before { flex-shrink: 0; margin-top: 0.1rem; }
+    .ps-card.problem li::before { content: "✗"; color: var(--orange); }
+    .ps-card.solution li::before { content: "✓"; color: var(--green); }
+
+    /* ── Framework cards ── */
+    .framework-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    @media (max-width: 700px) { .framework-grid { grid-template-columns: 1fr; } }
+    .framework-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+    .framework-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .framework-card .fw-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+    .tag { background: rgba(88,166,255,0.12); color: var(--accent); border: 1px solid rgba(88,166,255,0.25); border-radius: 6px; font-size: 0.78rem; padding: 0.2rem 0.55rem; }
+    .tag.green { background: rgba(63,185,80,0.12); color: var(--green); border-color: rgba(63,185,80,0.25); }
+    .tag.purple { background: rgba(188,140,255,0.12); color: var(--purple); border-color: rgba(188,140,255,0.25); }
+    .tag.yellow { background: rgba(210,153,34,0.12); color: var(--yellow); border-color: rgba(210,153,34,0.25); }
+
+    /* ── Maturity levels ── */
+    .levels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
+    @media (max-width: 900px) { .levels-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .levels-grid { grid-template-columns: 1fr; } }
+    .level-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; }
+    .level-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+    .level-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .level-desc { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── Articles ── */
+    .articles-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+    .article-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1.8rem; display: grid; grid-template-columns: 2.5rem 1fr; gap: 1rem; align-items: start; }
+    .article-num { font-size: 1.4rem; font-weight: 800; color: var(--accent); opacity: 0.6; }
+    .article-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .article-desc { font-size: 0.9rem; color: var(--muted); }
+
+    /* ── Install ── */
+    .install-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-top: 2rem; }
+    pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem 1.5rem; overflow-x: auto; font-size: 0.88rem; margin: 1rem 0; }
+    code { font-family: "Fira Code", "Cascadia Code", monospace; }
+    .kw { color: var(--purple); }
+    .fn { color: var(--accent); }
+    .st { color: var(--green); }
+    .cm { color: var(--muted); }
+    .nu { color: var(--yellow); }
+
+    /* ── Roadmap ── */
+    .roadmap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    @media (max-width: 700px) { .roadmap-grid { grid-template-columns: 1fr; } }
+    .phase-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; }
+    .phase-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.8rem; }
+    .phase-1 .phase-label { color: var(--green); }
+    .phase-2 .phase-label { color: var(--purple); }
+    .phase-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; }
+    .phase-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .phase-card li { font-size: 0.9rem; color: var(--muted); padding-left: 1.2rem; position: relative; }
+    .phase-card li::before { content: ""; position: absolute; left: 0; top: 0.6rem; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    .phase-2 li::before { background: var(--purple); }
+    .done li::before { background: var(--green); }
+
+    /* ── Stats row ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 2rem; }
+    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem 1rem; }
+    .stat-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── Footer ── */
+    footer { border-top: 1px solid var(--border); background: var(--surface); padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 4rem; }
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-brand">🧬 fair-data-toolkit</span>
+    <ul class="nav-links">
+      <li><a href="#frameworks">Frameworks</a></li>
+      <li><a href="#articles">Articles</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="https://github.com/alishahmohammadi22/fair-data-toolkit">GitHub →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-tag">Open Source · Python · Pharmaceutical R&D</div>
+  <h1>FAIR Data <span>Maturity</span> Framework</h1>
+  <p class="hero-sub">
+    From RDA indicators to agentic AI scoring — a Python toolkit and article series
+    for measuring and improving FAIR data compliance in life sciences.
+  </p>
+  <div class="hero-cta">
+    <a href="#articles" class="btn btn-primary">Read the Articles</a>
+    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit" class="btn btn-outline">View on GitHub</a>
+  </div>
+</section>
+
+<!-- ── Stats ── -->
+<div class="container">
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">41</div><div class="stat-label">RDA Maturity Indicators</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Pistoia Maturity Levels</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Article Notebooks</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Priority Tiers</div></div>
+  </div>
+</div>
+
+<!-- ── Problem / Solution ── -->
+<section class="section" id="problem">
+  <div class="container">
+    <div class="section-title">The FAIR Data Problem in Pharma</div>
+    <div class="section-sub">70–80% of pharmaceutical research data is never reused. The root cause is a lack of structured, measurable FAIRness.</div>
+    <div class="ps-grid">
+      <div class="ps-card problem">
+        <h3>Without FAIR</h3>
+        <ul>
+          <li>Data locked in proprietary LIMS with no external identifiers</li>
+          <li>No standard vocabulary — "VIAB" means different things in different systems</li>
+          <li>Access requires knowing who to email, not a documented protocol</li>
+          <li>No licence — legal ambiguity blocks pre-competitive sharing</li>
+          <li>Metadata disappears when the LIMS is decommissioned</li>
+          <li>AI/ML pipelines fail because training data is not machine-readable</li>
+        </ul>
+      </div>
+      <div class="ps-card solution">
+        <h3>With this Toolkit</h3>
+        <ul>
+          <li>Score all 41 RDA indicators with evidence documentation</li>
+          <li>Identify Essential gaps that block minimum FAIRness</li>
+          <li>Map your organisation to Bronze/Silver/Gold/Platinum maturity</li>
+          <li>Generate a prioritised remediation roadmap</li>
+          <li>Track progress over time with reusable JSON/CSV exports</li>
+          <li>Lay the groundwork for automated agentic FAIR scoring (Phase 2)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Frameworks ── -->
+<section class="section" id="frameworks" style="background: #10161c; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-title">Two Complementary Frameworks</div>
+    <div class="section-sub">This toolkit implements both the domain-agnostic RDA model and the pharma-specific Pistoia Alliance matrix.</div>
+    <div class="framework-grid">
+      <div class="framework-card">
+        <h3>RDA FAIR Maturity Model (2020)</h3>
+        <div class="fw-sub">Research Data Alliance Working Group · doi:10.15497/rda00050</div>
+        <p style="font-size:0.92rem; color: var(--muted);">
+          The authoritative operationalisation of the 15 FAIR sub-principles into 41 measurable indicators.
+          Each indicator has a precise compliance question, guidance, and evidence requirements.
+        </p>
+        <div class="tag-row">
+          <span class="tag">41 indicators</span>
+          <span class="tag green">Essential / Important / Useful</span>
+          <span class="tag purple">Metadata + Data scope</span>
+          <span class="tag yellow">5-level scoring</span>
+        </div>
+      </div>
+      <div class="framework-card">
+        <h3>Pistoia Alliance FAIR Maturity Matrix</h3>
+        <div class="fw-sub">Pistoia Alliance Life Sciences FAIR Initiative</div>
+        <p style="font-size:0.92rem; color: var(--muted);">
+          A tiered progression model built for pharmaceutical and life sciences organisations.
+          Maps directly to RDA indicators with pharma-specific context: GxP, CDISC, pre-competitive sharing.
+        </p>
+        <div class="tag-row">
+          <span class="tag">4 maturity levels</span>
+          <span class="tag green">Pharma-specific guidance</span>
+          <span class="tag purple">Mapped to RDA indicators</span>
+          <span class="tag yellow">GxP &amp; CDISC aware</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pistoia levels -->
+    <div style="margin-top: 2.5rem;">
+      <div class="section-title" style="font-size:1.2rem;">Pistoia Maturity Levels</div>
+      <div class="levels-grid">
+        <div class="level-card">
+          <div class="level-icon">🥉</div>
+          <div class="level-name">Bronze</div>
+          <div class="level-desc">Awareness &amp; initial implementation. Internal IDs, basic metadata, documented access process.</div>
+        </div>
+        <div class="level-card">
+          <div class="level-icon">🥈</div>
+          <div class="level-name">Silver</div>
+          <div class="level-desc">Defined processes &amp; standards. Global PIDs, controlled vocabularies, stable APIs, standard licences.</div>
+        </div>
+        <div class="level-card">
+          <div class="level-icon">🥇</div>
+          <div class="level-name">Gold</div>
+          <div class="level-desc">Automated assessment &amp; compliance. Machine-readable metadata, automated validation, FAIR scores tracked.</div>
+        </div>
+        <div class="level-card">
+          <div class="level-icon">💎</div>
+          <div class="level-name">Platinum</div>
+          <div class="level-desc">Self-service FAIR &amp; continuous improvement. FAIR-by-design, cross-org interoperability.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Articles ── -->
+<section class="section" id="articles">
+  <div class="container">
+    <div class="section-title">Article Series</div>
+    <div class="section-sub">Five Jupyter notebooks covering FAIR theory, both frameworks, and a hands-on assessment walkthrough.</div>
+    <div class="articles-list">
+      <div class="article-card">
+        <div class="article-num">01</div>
+        <div>
+          <div class="article-title">Introduction to FAIR Data Principles</div>
+          <div class="article-desc">The 15 FAIR sub-principles, FAIR vs Open, why FAIRness matters in pharmaceutical R&amp;D, and the key stakeholders (GO FAIR, RDA, Pistoia Alliance).</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-num">02</div>
+        <div>
+          <div class="article-title">The RDA FAIR Maturity Model In Depth</div>
+          <div class="article-desc">A complete guide to all 41 RDA indicators. Scoring system, priority levels, deep dive into F/A/I/R indicators, and a worked gap analysis on a synthetic pharma dataset.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-num">03</div>
+        <div>
+          <div class="article-title">The Pistoia Alliance FAIR Maturity Matrix</div>
+          <div class="article-desc">Bronze → Silver → Gold → Platinum tiers for pharma. RDA indicator mapping, pharma-specific context (GxP, CDISC), and a simulated organisational assessment.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-num">04</div>
+        <div>
+          <div class="article-title">Manual FAIR Assessment Walkthrough</div>
+          <div class="article-desc">Full end-to-end assessment of a CAR-T cell viability dataset (STD-2024-CART-001) against all 41 RDA indicators. Rich scorecard output, CSV export, and a three-phase remediation roadmap.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-num">05</div>
+        <div>
+          <div class="article-title">Automated FAIR Score Calculator</div>
+          <div class="article-desc">Semi-automated scoring from the Zenodo REST API. Architecture design for the agentic FAIRAssessorAgent (LangGraph + GPT) — the next module in this series.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Install ── -->
+<section class="section" id="install" style="background: #10161c; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-title">Install &amp; Quick Start</div>
+    <div class="install-block">
+      <p style="color:var(--muted); margin-bottom:0.5rem; font-size:0.9rem;">Install the package</p>
+      <pre><code>pip install fair-data-toolkit
+<span class="cm"># With notebook extras</span>
+pip install <span class="st">"fair-data-toolkit[notebooks]"</span></code></pre>
+
+      <p style="color:var(--muted); margin-bottom:0.5rem; font-size:0.9rem;">Run a manual assessment</p>
+      <pre><code><span class="kw">from</span> fair_toolkit <span class="kw">import</span> ManualFAIRAssessor, ComplianceScore, EvidenceLevel
+
+assessor = ManualFAIRAssessor(
+    dataset_id=<span class="st">"DS-001"</span>,
+    dataset_title=<span class="st">"CAR-T Cell Viability Assay"</span>,
+    assessed_by=<span class="st">"Ali Shahmohammadi"</span>,
+)
+
+assessor.score(<span class="st">"RDA-F1-01D"</span>, ComplianceScore.NOT_COMPLIANT,
+               evidence=<span class="st">"Only internal LIMS ID, no global PID"</span>)
+assessor.score(<span class="st">"RDA-F2-01M"</span>, ComplianceScore.PARTIALLY_COMPLIANT,
+               evidence=<span class="st">"Basic metadata present; assay conditions missing"</span>)
+
+assessor.print_scorecard()
+
+result = assessor.build_result()
+print(<span class="fn">f</span><span class="st">"Overall FAIR score: {result.overall_score}%"</span>)
+
+<span class="cm"># Get Essential indicator gaps</span>
+gaps = result.get_gaps(EvidenceLevel.ESSENTIAL)
+<span class="kw">for</span> gap <span class="kw">in</span> gaps:
+    print(<span class="fn">f</span><span class="st">"  ✗ {gap.indicator_id}: {gap.indicator_name}"</span>)</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ── Roadmap ── -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div class="section-title">Roadmap</div>
+    <div class="section-sub">Phase 1 delivers the manual assessment toolkit and articles. Phase 2 adds agentic AI scoring.</div>
+    <div class="roadmap-grid">
+      <div class="phase-card phase-1 done">
+        <div class="phase-label">Phase 1 — Current Release</div>
+        <h3>Manual Assessment Toolkit</h3>
+        <ul>
+          <li>All 41 RDA FAIR Maturity Model indicators as Pydantic models</li>
+          <li>Pistoia Alliance Bronze/Silver/Gold/Platinum matrix</li>
+          <li>ManualFAIRAssessor with Rich scorecard output</li>
+          <li>Gap analysis by Essential / Important / Useful priority</li>
+          <li>Five-article Jupyter notebook series</li>
+          <li>CSV and JSON export of assessment results</li>
+        </ul>
+      </div>
+      <div class="phase-card phase-2">
+        <div class="phase-label">Phase 2 — In Development</div>
+        <h3>Agentic FAIR Scorer (fair_agent/)</h3>
+        <ul>
+          <li>MetadataFetcherAgent — parses any REST API (JSON-LD, DCAT, Dublin Core)</li>
+          <li>StructuralAssessorAgent — auto-scores ~20 structural indicators</li>
+          <li>ContentAnalysisAgent (GPT) — scores semantic indicators from text</li>
+          <li>ExternalVerifierAgent — validates ontology terms via BioPortal/OLS</li>
+          <li>GovernanceReporterAgent — generates remediation roadmap</li>
+          <li>Full LangGraph pipeline — input any API, output FAIRAssessmentResult</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>
+    <strong>fair-data-toolkit</strong> ·
+    Built by <a href="https://alishahmohammadi22.github.io">Ali Shahmohammadi, Ph.D.</a> ·
+    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit">GitHub</a> ·
+    MIT License
+  </p>
+  <p style="margin-top:0.5rem;">
+    Based on the <a href="https://doi.org/10.15497/rda00050">RDA FAIR Data Maturity Model</a>
+    and the <a href="https://www.pistoiaalliance.org/projects/current-projects/fair-data/">Pistoia Alliance FAIR Maturity Matrix</a>.
+  </p>
+</footer>
+
+</body>
+</html>
