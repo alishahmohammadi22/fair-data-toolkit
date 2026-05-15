@@ -16,7 +16,7 @@
 It implements two complementary frameworks:
 
 - **RDA FAIR Maturity Model (2020)** — 41 indicators across F/A/I/R with Essential / Important / Useful priority levels  
-- **Pistoia Alliance FAIR Maturity Matrix** — Bronze / Silver / Gold / Platinum tiered model for pharma
+- **Pistoia Alliance FAIR Maturity Matrix (v1.1)** — 6-level (L0–L5) × 7-dimension organisational maturity model for life science organisations
 
 The toolkit enables you to conduct a full manual FAIR assessment, score all 41 indicators, generate a gap analysis, and build a prioritised remediation roadmap.
 
@@ -28,7 +28,7 @@ The toolkit enables you to conduct a full manual FAIR assessment, score all 41 i
 |---|---------|-------------|
 | 01 | [Introduction to FAIR Data Principles](notebooks/01_introduction_to_fair.ipynb) | The 15 FAIR sub-principles, FAIR vs Open, pharma context, key stakeholders |
 | 02 | [RDA FAIR Maturity Model](notebooks/02_rda_fair_maturity_model.ipynb) | All 41 RDA indicators, scoring system, worked gap analysis |
-| 03 | [Pistoia Alliance FAIR Maturity Matrix](notebooks/03_pistoia_fair_maturity_matrix.ipynb) | Bronze/Silver/Gold/Platinum tiers, pharma mapping, org assessment |
+| 03 | [Pistoia Alliance FAIR Maturity Matrix](notebooks/03_pistoia_fair_maturity_matrix.ipynb) | 6 levels (L0–L5) × 7 organisational dimensions; self-assessment walkthrough |
 | 04 | [Manual FAIR Assessment Walkthrough](notebooks/04_manual_fair_assessment_walkthrough.ipynb) | Full assessment of a CAR-T viability dataset, export, remediation roadmap |
 | 05 | [FAIR Score Calculator](notebooks/05_fair_score_calculator.ipynb) | Semi-automated scoring from Zenodo API; agentic scorer architecture sketch |
 
@@ -98,7 +98,7 @@ for gap in essential_gaps:
 fair_toolkit/
 ├── models/
 │   ├── rda_indicators.py    # All 41 RDA FAIR Maturity Model indicators
-│   ├── pistoia_matrix.py    # Pistoia Alliance Bronze/Silver/Gold/Platinum matrix
+│   ├── pistoia_matrix.py    # Pistoia Alliance 6-level × 7-dimension FAIR Maturity Matrix
 │   └── scoring.py           # IndicatorScore, FAIRDimensionScore, FAIRAssessmentResult
 └── assessors/
     └── manual_assessor.py   # ManualFAIRAssessor — interactive assessment tool
@@ -116,7 +116,8 @@ Container for a complete assessment. Holds dimension scores for F/A/I/R, calcula
 List of all 41 `RDAIndicator` objects with id, principle, sub-principle, scope, priority, question, guidance, and examples.
 
 **`PISTOIA_MATRIX`**  
-List of all `PistoiaIndicator` objects spanning Bronze through Platinum, with links to corresponding RDA indicators and pharma-specific context.
+List of all 42 `MatrixCell` objects (7 dimensions × 6 levels L0–L5). Each cell describes the
+organisational state across FAIR data, leadership, strategy, roles, processes, knowledge, and tools.
 
 ---
 
@@ -134,14 +135,23 @@ List of all `PistoiaIndicator` objects spanning Bronze through Platinum, with li
 
 Compliance levels: `Not Applicable` / `Not Assessed` / `Not Compliant` / `Partially Compliant` / `Compliant`
 
-### Pistoia Alliance FAIR Maturity Matrix
+### Pistoia Alliance FAIR Maturity Matrix (v1.1, 2025)
 
-| Level | Focus |
-|-------|-------|
-| 🥉 Bronze | Awareness: internal IDs, basic metadata, documented access |
-| 🥈 Silver | Standards: global PIDs, controlled vocabularies, open APIs |
-| 🥇 Gold | Automation: machine-readable metadata, automated validation, FAIR scores tracked |
-| 💎 Platinum | Self-service: FAIR-by-design, cross-org interoperability, continuous improvement |
+An **organisational** maturity model for FAIR implementation. Structured as a **7 dimensions × 6 levels** matrix.
+Descriptive, not prescriptive. Created by 20+ experts across the life science ecosystem.
+
+| Level | Nickname | Metaphor | Key Features |
+|-------|----------|----------|--------------|
+| L0 | Life is unFAIR | Junkyard | No awareness; data silos; no metadata standards |
+| L1 | Started the FAIR journey | Flea market | Awareness starts; first pilots; identifiers emerging |
+| L2 | Getting FAIR | Street Market | Pilots in place; data cataloged; local model conformance |
+| L3 | Pretty FAIR | Specialized Local Markets | Domain-level models; machine interpretation locally |
+| L4 | Really FAIR | Hyper Market | FAIR pervasive; GUPRIs; cross-domain standards |
+| L5 | FAIRest of them all | Digital Online Store | Aspirational; self-describing objects; ecosystem interoperability |
+
+**7 Dimensions:** FAIR data · FAIR leadership · FAIR strategy · FAIR roles · FAIR processes · FAIR knowledge · FAIR tools & infrastructures
+
+Source: https://pistoiaalliance.github.io/FAIRMaturityMatrix/ (CC BY 4.0)
 
 ---
 
@@ -149,7 +159,7 @@ Compliance levels: `Not Applicable` / `Not Assessed` / `Not Compliant` / `Partia
 
 ### Phase 1 — Manual Assessment Toolkit (this release)
 - [x] All 41 RDA FAIR Maturity Model indicators as Pydantic models
-- [x] Pistoia Alliance FAIR Maturity Matrix (Bronze → Platinum)
+- [x] Pistoia Alliance FAIR Maturity Matrix: 6 levels (L0–L5) × 7 organisational dimensions
 - [x] `ManualFAIRAssessor` with Rich scorecard output
 - [x] Gap analysis by priority level
 - [x] 5-article Jupyter notebook series
@@ -168,7 +178,7 @@ Compliance levels: `Not Applicable` / `Not Assessed` / `Not Compliant` / `Partia
 
 - Wilkinson, M. D. et al. (2016). The FAIR Guiding Principles for scientific data management and stewardship. *Scientific Data*, 3, 160018. https://doi.org/10.1038/sdata.2016.18
 - RDA FAIR Data Maturity Model Working Group (2020). FAIR Data Maturity Model: specification and guidelines. https://doi.org/10.15497/rda00050
-- Pistoia Alliance (2021). FAIR Data Implementation Profile for Life Sciences. https://www.pistoiaalliance.org/projects/current-projects/fair-data/
+- Pistoia Alliance FAIR Maturity Matrix (2025). https://pistoiaalliance.github.io/FAIRMaturityMatrix/ (CC BY 4.0)
 
 ---
 

@@ -2,7 +2,7 @@
 fair_toolkit — FAIR Data Maturity Assessment Toolkit
 
 Implements the RDA FAIR Maturity Model (41 indicators) and the
-Pistoia Alliance FAIR Maturity Matrix (Bronze/Silver/Gold/Platinum)
+Pistoia Alliance FAIR Maturity Matrix (L0–L5 × 7 organisational dimensions)
 for assessing and scoring FAIR data in pharmaceutical R&D contexts.
 """
 
@@ -16,8 +16,14 @@ from fair_toolkit.models.rda_indicators import (
 )
 from fair_toolkit.models.pistoia_matrix import (
     MaturityLevel,
-    PistoiaIndicator,
+    MatrixDimension,
+    MatrixCell,
     PISTOIA_MATRIX,
+    LEVEL_METADATA,
+    get_cell,
+    get_level_cells,
+    get_dimension_cells,
+    describe_level,
 )
 from fair_toolkit.models.scoring import (
     IndicatorScore,
@@ -35,8 +41,14 @@ __all__ = [
     "RDAIndicator",
     "RDA_INDICATORS",
     "MaturityLevel",
-    "PistoiaIndicator",
+    "MatrixDimension",
+    "MatrixCell",
     "PISTOIA_MATRIX",
+    "LEVEL_METADATA",
+    "get_cell",
+    "get_level_cells",
+    "get_dimension_cells",
+    "describe_level",
     "IndicatorScore",
     "FAIRDimensionScore",
     "FAIRAssessmentResult",

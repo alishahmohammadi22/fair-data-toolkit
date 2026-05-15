@@ -161,7 +161,7 @@
 <div class="container">
   <div class="stats-row">
     <div class="stat"><div class="stat-num">41</div><div class="stat-label">RDA Maturity Indicators</div></div>
-    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Pistoia Maturity Levels</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Pistoia Maturity Levels</div></div>
     <div class="stat"><div class="stat-num">5</div><div class="stat-label">Article Notebooks</div></div>
     <div class="stat"><div class="stat-num">3</div><div class="stat-label">Priority Tiers</div></div>
   </div>
@@ -189,7 +189,7 @@
         <ul>
           <li>Score all 41 RDA indicators with evidence documentation</li>
           <li>Identify Essential gaps that block minimum FAIRness</li>
-          <li>Map your organisation to Bronze/Silver/Gold/Platinum maturity</li>
+          <li>Map your organisation to L0–L5 Pistoia maturity levels across 7 dimensions</li>
           <li>Generate a prioritised remediation roadmap</li>
           <li>Track progress over time with reusable JSON/CSV exports</li>
           <li>Lay the groundwork for automated agentic FAIR scoring (Phase 2)</li>
@@ -221,45 +221,61 @@
       </div>
       <div class="framework-card">
         <h3>Pistoia Alliance FAIR Maturity Matrix</h3>
-        <div class="fw-sub">Pistoia Alliance Life Sciences FAIR Initiative</div>
+        <div class="fw-sub">Pistoia Alliance Life Sciences FAIR Initiative (v1.1, CC BY 4.0)</div>
         <p style="font-size:0.92rem; color: var(--muted);">
-          A tiered progression model built for pharmaceutical and life sciences organisations.
-          Maps directly to RDA indicators with pharma-specific context: GxP, CDISC, pre-competitive sharing.
+          An <strong>organisational</strong> maturity model for FAIR implementation in life science organisations.
+          Structured as a 7-dimension × 6-level matrix (L0–L5). Descriptive, not prescriptive.
+          Developed by 20+ experts from AstraZeneca, BMS, Novo Nordisk, ELIXIR, GO FAIR Foundation, and others.
         </p>
         <div class="tag-row">
-          <span class="tag">4 maturity levels</span>
-          <span class="tag green">Pharma-specific guidance</span>
-          <span class="tag purple">Mapped to RDA indicators</span>
-          <span class="tag yellow">GxP &amp; CDISC aware</span>
+          <span class="tag">6 maturity levels (L0–L5)</span>
+          <span class="tag green">7 organisational dimensions</span>
+          <span class="tag purple">Organisational self-assessment</span>
+          <span class="tag yellow">Life science context</span>
         </div>
       </div>
     </div>
 
     <!-- Pistoia levels -->
     <div style="margin-top: 2.5rem;">
-      <div class="section-title" style="font-size:1.2rem;">Pistoia Maturity Levels</div>
+      <div class="section-title" style="font-size:1.2rem;">Pistoia Maturity Levels (L0–L5)</div>
       <div class="levels-grid">
         <div class="level-card">
-          <div class="level-icon">🥉</div>
-          <div class="level-name">Bronze</div>
-          <div class="level-desc">Awareness &amp; initial implementation. Internal IDs, basic metadata, documented access process.</div>
+          <div class="level-icon">🏚️</div>
+          <div class="level-name">L0 — Life is unFAIR</div>
+          <div class="level-desc">Junkyard. Data silos, no metadata standards. No FAIR awareness or leadership engagement.</div>
         </div>
         <div class="level-card">
-          <div class="level-icon">🥈</div>
-          <div class="level-name">Silver</div>
-          <div class="level-desc">Defined processes &amp; standards. Global PIDs, controlled vocabularies, stable APIs, standard licences.</div>
+          <div class="level-icon">🛍️</div>
+          <div class="level-name">L1 — Started the FAIR Journey</div>
+          <div class="level-desc">Flea market. FAIR awareness starts; first pilots emerge. Identifiers and metadata beginning.</div>
         </div>
         <div class="level-card">
-          <div class="level-icon">🥇</div>
-          <div class="level-name">Gold</div>
-          <div class="level-desc">Automated assessment &amp; compliance. Machine-readable metadata, automated validation, FAIR scores tracked.</div>
+          <div class="level-icon">🏪</div>
+          <div class="level-name">L2 — Getting FAIR</div>
+          <div class="level-desc">Street Market. Pilots in place. Data cataloged; local models; POC infrastructure deployed.</div>
         </div>
         <div class="level-card">
-          <div class="level-icon">💎</div>
-          <div class="level-name">Platinum</div>
-          <div class="level-desc">Self-service FAIR &amp; continuous improvement. FAIR-by-design, cross-org interoperability.</div>
+          <div class="level-icon">🏬</div>
+          <div class="level-name">L3 — Pretty FAIR</div>
+          <div class="level-desc">Specialized Local Markets. Domain-level models; machine interpretation locally; COTS tools deployed.</div>
+        </div>
+        <div class="level-card">
+          <div class="level-icon">🛒</div>
+          <div class="level-name">L4 — Really FAIR</div>
+          <div class="level-desc">Hyper Market. FAIR pervasive; GUPRIs; cross-domain standards; enterprise interoperability.</div>
+        </div>
+        <div class="level-card">
+          <div class="level-icon">🌐</div>
+          <div class="level-name">L5 — FAIRest of Them All</div>
+          <div class="level-desc">Digital Online Store. Aspirational. Self-describing objects; machine actionability; ecosystem interoperability.</div>
         </div>
       </div>
+      <p style="font-size:0.82rem; color: var(--muted); margin-top:1rem;">
+        Each level is assessed across 7 dimensions: FAIR data · FAIR leadership · FAIR strategy ·
+        FAIR roles · FAIR processes · FAIR knowledge · FAIR tools &amp; infrastructures.
+        Source: <a href="https://pistoiaalliance.github.io/FAIRMaturityMatrix/" target="_blank" rel="noopener" style="color:var(--accent)">pistoiaalliance.github.io/FAIRMaturityMatrix</a> (v1.1, CC BY 4.0)
+      </p>
     </div>
   </div>
 </section>
@@ -288,7 +304,7 @@
         <div class="article-num">03</div>
         <div>
           <div class="article-title">The Pistoia Alliance FAIR Maturity Matrix</div>
-          <div class="article-desc">Bronze → Silver → Gold → Platinum tiers for pharma. RDA indicator mapping, pharma-specific context (GxP, CDISC), and a simulated organisational assessment.</div>
+          <div class="article-desc">The correct Pistoia Alliance FAIR Maturity Matrix: 6 levels (L0–L5) × 7 organisational dimensions (data, leadership, strategy, roles, processes, knowledge, tools). Organisational self-assessment walkthrough.</div>
         </div>
       </div>
       <div class="article-card">
@@ -357,7 +373,7 @@ gaps = result.get_gaps(EvidenceLevel.ESSENTIAL)
         <h3>Manual Assessment Toolkit</h3>
         <ul>
           <li>All 41 RDA FAIR Maturity Model indicators as Pydantic models</li>
-          <li>Pistoia Alliance Bronze/Silver/Gold/Platinum matrix</li>
+          <li>Pistoia Alliance FAIR Maturity Matrix: 6 levels (L0–L5) × 7 organisational dimensions</li>
           <li>ManualFAIRAssessor with Rich scorecard output</li>
           <li>Gap analysis by Essential / Important / Useful priority</li>
           <li>Five-article Jupyter notebook series</li>
