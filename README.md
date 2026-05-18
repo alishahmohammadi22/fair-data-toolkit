@@ -10,7 +10,7 @@
 [![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg?logo=python)](https://www.python.org)
 [![Jupyter](https://img.shields.io/badge/Notebooks-Jupyter-orange?logo=jupyter)](https://nbviewer.org/github/alishahmohammadi22/fair-data-toolkit/tree/main/notebooks/)
 [![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-informational?logo=github)](https://alishahmohammadi22.github.io/fair-data-toolkit)
-[![DOI](https://img.shields.io/badge/DOI-register%20on%20Zenodo-lightgrey?logo=zenodo)](https://zenodo.org)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20274083.svg)](https://doi.org/10.5281/zenodo.20274083)
 
 ---
 
