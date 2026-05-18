@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: fair_toolkit
+      POSTGRES_USER: fair
+      POSTGRES_PASSWORD: fairpass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "fair", "-d", "fair_toolkit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..                          # repo root — gives access to fair_toolkit/
+      dockerfile: webapp/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://fair:fairpass@db:5432/fair_toolkit
+    ports:
+      - "8080:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../fair_toolkit:/app/fair_toolkit  # hot-reload in dev
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

@@ -11,6 +11,8 @@
 [![Jupyter](https://img.shields.io/badge/Notebooks-Jupyter-orange?logo=jupyter)](https://nbviewer.org/github/alishahmohammadi22/fair-data-toolkit/tree/main/notebooks/)
 [![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-informational?logo=github)](https://alishahmohammadi22.github.io/fair-data-toolkit)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20274083.svg)](https://doi.org/10.5281/zenodo.20274083)
+[![Vue 3](https://img.shields.io/badge/webapp-Vue%203%20%2B%20FastAPI-42b883?logo=vue.js&logoColor=white)](webapp/)
+[![Podman](https://img.shields.io/badge/containers-Podman-892ca0?logo=podman&logoColor=white)](webapp/podman-compose.yml)
 
 ---
 
@@ -97,6 +99,120 @@ for gap in essential_gaps:
 
 ---
 
+## Web Application
+
+A full-stack web app that wraps `fair_toolkit` in a modern, user-friendly interface — designed for data stewards, scientists, and governance teams who want to run FAIR assessments without writing code.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   Browser :3000                          │
+│   Vue 3 + Vite + Tailwind CSS                           │
+│   • Home — assessment dashboard + new assessment form   │
+│   • Assess — F / A / I / R tabbed questionnaire UI      │
+│     (auto-saves every 1.2 s, per-tab progress meter)    │
+│   • Results — scorecard gauges + gap analysis table     │
+└────────────────────┬────────────────────────────────────┘
+                     │ /api/* (nginx proxy)
+┌────────────────────▼────────────────────────────────────┐
+│                   FastAPI :8000                          │
+│   Python 3.11 · SQLAlchemy 2.0 · psycopg2               │
+│   Reuses fair_toolkit directly — no code duplication    │
+│   Routes:                                               │
+│     GET  /api/health                                    │
+│     GET  /api/indicators/                               │
+│     GET  /api/indicators/by-principle/{F|A|I|R}        │
+│     POST /api/assessments/                              │
+│     GET  /api/assessments/                              │
+│     GET  /api/assessments/{id}                          │
+│     PUT  /api/assessments/{id}/scores  (bulk upsert)   │
+│     DELETE /api/assessments/{id}                        │
+└────────────────────┬────────────────────────────────────┘
+                     │ SQLAlchemy / psycopg2
+┌────────────────────▼────────────────────────────────────┐
+│                PostgreSQL 16 :5432                       │
+│   Tables: assessments · indicator_scores                │
+│   Health-checked before API container starts            │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Key Features
+
+| Feature | Details |
+|---|---|
+| **38 RDA indicators** | All indicators loaded from `fair_toolkit` at runtime — single source of truth |
+| **F/A/I/R tabbed UI** | Each principle on its own tab with a live completion % in the header |
+| **Auto-save** | Changes debounced and persisted to PostgreSQL every 1.2 s — no Save button needed |
+| **Compliance colours** | Card border and background change in real time (green = compliant, red = non-compliant, amber = partial) |
+| **Collapsible guidance** | Each indicator card expands to show the full RDA question and assessment guidance |
+| **Score gauges** | Animated SVG circular gauges for Overall, F, A, I, R dimensions on the Results page |
+| **Essential gap list** | Results page highlights all unmet Essential-priority indicators with remediation links |
+| **All scores table** | Sortable per-indicator compliance table with evidence previews |
+| **REST API** | Full OpenAPI docs at `http://localhost:8080/docs` |
+
+### Running with Podman (recommended)
+
+```bash
+git clone https://github.com/alishahmohammadi22/fair-data-toolkit.git
+cd fair-data-toolkit/webapp
+podman-compose up --build
+```
+
+Then open **http://localhost:3000** in your browser.
+
+> **Docker users:** the same `podman-compose.yml` is valid `docker-compose` syntax — replace `podman-compose` with `docker compose`.
+
+### Running locally (development)
+
+```bash
+# Terminal 1 — API
+cd fair-data-toolkit
+pip install -e "."
+pip install -r webapp/api/requirements.txt
+DATABASE_URL=postgresql://fair:fairpass@localhost:5432/fair_toolkit uvicorn webapp.api.main:app --reload --port 8080
+
+# Terminal 2 — Frontend
+cd fair-data-toolkit/webapp/frontend
+npm install
+npm run dev   # http://localhost:3000
+```
+
+### Webapp project structure
+
+```
+webapp/
+├── podman-compose.yml          # Orchestrates db + api + frontend
+├── api/
+│   ├── Dockerfile              # python:3.11-slim, installs fair_toolkit + FastAPI
+│   ├── requirements.txt        # fastapi, uvicorn, sqlalchemy, psycopg2-binary
+│   ├── main.py                 # FastAPI app, CORS, lifespan startup
+│   ├── database.py             # SQLAlchemy engine + session factory
+│   ├── models.py               # Assessment + IndicatorScore ORM tables
+│   ├── schemas.py              # Pydantic request/response models
+│   ├── init_db.py              # create_all() called on container start
+│   └── routers/
+│       ├── indicators.py       # GET /api/indicators/*
+│       └── assessments.py      # CRUD + bulk score upsert + _compute_scores()
+└── frontend/
+    ├── Dockerfile              # node:20-alpine build → nginx:alpine serve
+    ├── nginx.conf              # SPA routing + /api/ proxy to FastAPI
+    ├── package.json            # Vue 3.4, vue-router 4, axios, Tailwind CSS 3
+    ├── vite.config.js          # Vite 5, dev proxy
+    ├── tailwind.config.js      # Custom FAIR colours (F=blue, A=emerald, I=violet, R=amber)
+    └── src/
+        ├── main.js             # Vue app + vue-router bootstrap
+        ├── App.vue             # Root layout with branded navbar
+        ├── api/client.js       # Axios instance with all 7 endpoint helpers
+        ├── views/
+        │   ├── HomeView.vue    # Dashboard: list assessments, create new
+        │   ├── AssessView.vue  # F/A/I/R tabbed questionnaire with auto-save
+        │   └── ResultView.vue  # Scorecard + gap analysis + indicators table
+        └── components/
+            ├── IndicatorCard.vue  # Per-indicator card (dropdown + evidence + notes)
+            └── ScoreGauge.vue     # Animated SVG circular score gauge
+```
+
+---
+
 ## Package Structure
 
 ```
@@ -168,6 +284,8 @@ Source: https://pistoiaalliance.github.io/FAIRMaturityMatrix/ (CC BY 4.0)
 - [x] `ManualFAIRAssessor` with Rich scorecard output
 - [x] Gap analysis by priority level
 - [x] 5-article Jupyter notebook series
+- [x] Vue 3 + FastAPI + PostgreSQL web application (containerised with Podman/Docker)
+- [x] Published to Zenodo with citable DOI (10.5281/zenodo.20274083)
 
 ### Phase 2 — Agentic FAIR Scorer (`fair_agent/`)
 - [ ] `MetadataFetcherAgent` — fetches and parses metadata from any REST API
