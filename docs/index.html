@@ -126,6 +126,30 @@
     /* ── Footer ── */
     footer { border-top: 1px solid var(--border); background: var(--surface); padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 4rem; }
     footer a { color: var(--accent); }
+
+    /* ── Web App section ── */
+    .webapp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 2rem; }
+    @media (max-width: 900px) { .webapp-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .webapp-grid { grid-template-columns: 1fr; } }
+    .webapp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s; }
+    .webapp-card:hover { border-color: var(--accent); }
+    .webapp-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+    .webapp-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .webapp-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.55; }
+    .arch-stack { display: flex; flex-direction: column; align-items: stretch; gap: 0; max-width: 560px; margin-top: 1rem; }
+    .arch-layer { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.4rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .arch-fe  { border-color: #42b883; }
+    .arch-api { border-color: var(--accent); }
+    .arch-db  { border-color: var(--purple); }
+    .arch-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; min-width: 72px; }
+    .arch-fe  .arch-label { color: #42b883; }
+    .arch-api .arch-label { color: var(--accent); }
+    .arch-db  .arch-label { color: var(--purple); }
+    .arch-detail { font-size: 0.88rem; color: var(--text); }
+    .arch-port { margin-left: auto; font-size: 0.78rem; color: var(--muted); font-family: monospace; }
+    .arch-connector { display: flex; align-items: center; gap: 0.8rem; padding: 0.25rem 1.6rem; }
+    .arch-connector-line { flex: 1; height: 1px; background: var(--border); }
+    .arch-connector-label { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -138,6 +162,7 @@
       <li><a href="#articles">Articles</a></li>
       <li><a href="#install">Install</a></li>
       <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#webapp">Web App</a></li>
       <li><a href="https://github.com/alishahmohammadi22/fair-data-toolkit">GitHub →</a></li>
     </ul>
   </div>
@@ -362,6 +387,111 @@ gaps = result.get_gaps(EvidenceLevel.ESSENTIAL)
   </div>
 </section>
 
+<!-- ── Web Application ── -->
+<section class="section" id="webapp" style="background: #10161c; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-title">Web Application</div>
+    <div class="section-sub">A full-stack FAIR assessment interface built on <code>fair_toolkit</code> — designed for data stewards and scientists who want to run assessments without writing code.</div>
+
+    <div class="webapp-grid">
+      <div class="webapp-card">
+        <div class="webapp-icon">⚖️</div>
+        <div class="webapp-title">F / A / I / R Tabbed Interface</div>
+        <div class="webapp-desc">Each FAIR principle on its own colour-coded tab with a live completion percentage. Compliance colours update card borders and backgrounds in real time.</div>
+      </div>
+      <div class="webapp-card">
+        <div class="webapp-icon">💾</div>
+        <div class="webapp-title">Auto-Save — No Lost Work</div>
+        <div class="webapp-desc">Changes are debounced and persisted to PostgreSQL every 1.2 seconds automatically. Pick up any assessment where you left off, across sessions and users.</div>
+      </div>
+      <div class="webapp-card">
+        <div class="webapp-icon">📊</div>
+        <div class="webapp-title">Score Gauges &amp; Gap Analysis</div>
+        <div class="webapp-desc">Animated SVG circular gauges for Overall, F, A, I, R dimensions. Results page lists all unmet Essential-priority indicators with evidence and action notes.</div>
+      </div>
+      <div class="webapp-card">
+        <div class="webapp-icon">🔌</div>
+        <div class="webapp-title">REST API + OpenAPI Docs</div>
+        <div class="webapp-desc">Full FastAPI backend with interactive Swagger docs at <code>/docs</code>. Bulk score upsert, live FAIR scoring via <code>ManualFAIRAssessor</code> on every GET.</div>
+      </div>
+      <div class="webapp-card">
+        <div class="webapp-icon">🐳</div>
+        <div class="webapp-title">One-Command Deploy</div>
+        <div class="webapp-desc">Single <code>podman-compose up --build</code> starts PostgreSQL, FastAPI, and the Vue 3 SPA. The same compose file works with <code>docker compose</code>.</div>
+      </div>
+      <div class="webapp-card">
+        <div class="webapp-icon">🔗</div>
+        <div class="webapp-title">Single Source of Truth</div>
+        <div class="webapp-desc">The API imports <code>fair_toolkit</code> directly — all 38 indicators and scoring logic live in the Python package. The webapp is a pure UI layer with no duplication.</div>
+      </div>
+    </div>
+
+    <!-- Architecture -->
+    <div style="margin-top: 2.5rem; display: flex; gap: 3rem; flex-wrap: wrap; align-items: flex-start;">
+      <div style="flex: 1; min-width: 280px;">
+        <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:1rem;">Architecture</p>
+        <div class="arch-stack">
+          <div class="arch-layer arch-fe">
+            <span class="arch-label">Frontend</span>
+            <span class="arch-detail">Vue 3 · Vite · Tailwind CSS</span>
+            <span class="arch-port">:3000</span>
+          </div>
+          <div class="arch-connector">
+            <div class="arch-connector-line"></div>
+            <span class="arch-connector-label">nginx /api/* proxy</span>
+            <div class="arch-connector-line"></div>
+          </div>
+          <div class="arch-layer arch-api">
+            <span class="arch-label">API</span>
+            <span class="arch-detail">FastAPI · SQLAlchemy · fair_toolkit</span>
+            <span class="arch-port">:8080</span>
+          </div>
+          <div class="arch-connector">
+            <div class="arch-connector-line"></div>
+            <span class="arch-connector-label">psycopg2</span>
+            <div class="arch-connector-line"></div>
+          </div>
+          <div class="arch-layer arch-db">
+            <span class="arch-label">Database</span>
+            <span class="arch-detail">PostgreSQL 16 Alpine</span>
+            <span class="arch-port">:5432</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick start -->
+      <div style="flex: 2; min-width: 320px;">
+        <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:0.6rem;">Quick Start</p>
+        <pre><code>git clone https://github.com/alishahmohammadi22/fair-data-toolkit.git
+cd fair-data-toolkit/webapp
+podman-compose up --build      <span class="cm"># or: docker compose up --build</span>
+
+<span class="cm"># Frontend:  http://localhost:3000</span>
+<span class="cm"># API docs:  http://localhost:8080/docs</span>
+<span class="cm"># Health:    http://localhost:8080/api/health</span></code></pre>
+
+        <div class="tag-row" style="margin-top:1rem;">
+          <span class="tag">Vue 3.4</span>
+          <span class="tag">vue-router 4</span>
+          <span class="tag">Tailwind CSS 3</span>
+          <span class="tag">Vite 5</span>
+          <span class="tag green">FastAPI</span>
+          <span class="tag green">SQLAlchemy 2.0</span>
+          <span class="tag green">Python 3.11</span>
+          <span class="tag purple">PostgreSQL 16</span>
+          <span class="tag purple">Podman / Docker</span>
+          <span class="tag yellow">nginx</span>
+        </div>
+
+        <div style="margin-top:1.2rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
+          <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/tree/main/webapp" class="btn btn-outline" style="font-size:0.85rem; padding:0.5rem 1rem;">View Source →</a>
+          <a href="https://github.com/alishahmohammadi22/fair-data-toolkit#web-application" class="btn btn-outline" style="font-size:0.85rem; padding:0.5rem 1rem;">Full Docs →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── Roadmap ── -->
 <section class="section" id="roadmap">
   <div class="container">
@@ -378,6 +508,8 @@ gaps = result.get_gaps(EvidenceLevel.ESSENTIAL)
           <li>Gap analysis by Essential / Important / Useful priority</li>
           <li>Five-article Jupyter notebook series</li>
           <li>CSV and JSON export of assessment results</li>
+          <li>Vue 3 + FastAPI + PostgreSQL web application</li>
+          <li>Published to Zenodo (DOI: 10.5281/zenodo.20274083)</li>
         </ul>
       </div>
       <div class="phase-card phase-2">
@@ -407,6 +539,7 @@ gaps = result.get_gaps(EvidenceLevel.ESSENTIAL)
   <p style="margin-top:0.5rem;">
     Based on the <a href="https://doi.org/10.15497/rda00050">RDA FAIR Data Maturity Model</a>
     and the <a href="https://www.pistoiaalliance.org/projects/current-projects/fair-data/">Pistoia Alliance FAIR Maturity Matrix</a>.
+    · DOI: <a href="https://doi.org/10.5281/zenodo.20274083">10.5281/zenodo.20274083</a>
   </p>
 </footer>
 
