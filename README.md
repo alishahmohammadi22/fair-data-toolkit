@@ -3,9 +3,14 @@
 **FAIR Data Maturity Framework for Pharmaceutical R&D**  
 *From RDA indicators to agentic AI scoring*
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
+[![CI](https://github.com/alishahmohammadi22/fair-data-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/alishahmohammadi22/fair-data-toolkit/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-informational)](https://alishahmohammadi22.github.io/fair-data-toolkit)
+[![Last Commit](https://img.shields.io/github/last-commit/alishahmohammadi22/fair-data-toolkit)](https://github.com/alishahmohammadi22/fair-data-toolkit/commits/main)
+[![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg?logo=python)](https://www.python.org)
+[![Jupyter](https://img.shields.io/badge/Notebooks-Jupyter-orange?logo=jupyter)](https://nbviewer.org/github/alishahmohammadi22/fair-data-toolkit/tree/main/notebooks/)
+[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-informational?logo=github)](https://alishahmohammadi22.github.io/fair-data-toolkit)
+[![DOI](https://img.shields.io/badge/DOI-register%20on%20Zenodo-lightgrey?logo=zenodo)](https://zenodo.org)
 
 ---
 
