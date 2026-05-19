@@ -14,6 +14,7 @@ def _serialize(ind):
         "name": ind.name,
         "question": ind.question,
         "guidance": getattr(ind, "guidance", None),
+        "description": getattr(ind, "description", None),
         "example": getattr(ind, "example", None),
     }
 

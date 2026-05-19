@@ -102,7 +102,8 @@ class RDAIndicator(BaseModel):
     name: str = Field(description="Short indicator name")
     question: str = Field(description="The question an assessor answers")
     guidance: str = Field(description="How to evaluate / what to look for")
-    example: Optional[str] = Field(default=None, description="Pharma-specific example")
+    description: Optional[str] = Field(default=None, description="Practical description of what this indicator means in context")
+    example: Optional[str] = Field(default=None, description="Concrete example of compliance")
 
 
 # ── All 41 RDA FAIR Maturity Indicators ───────────────────────────────────
@@ -123,7 +124,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "a DOI, ARK, Handle, or IGSN. The PID must resolve to the metadata record. "
             "Verify the PID is registered with a recognised PID authority."
         ),
-        example="The dataset's DataCite metadata record has its own DOI distinct from the data DOI.",
+        description=(
+            "Links/pointers between metadata and datasets the metadata don't explicitly describe "
+            "indicate the type of relationship they share, e.g., 'higher dose than', 'entry experiment of', etc."
+        ),
+        example="Display 'Related Data' with other levels aside from described study, etc.",
     ),
     RDAIndicator(
         id="RDA-F1-01D",
@@ -138,7 +143,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "that persists independently of the storage location. "
             "The PID should resolve to the data or a landing page describing access."
         ),
-        example="A CAR-T assay dataset registered in LabKey is assigned a DOI via DataCite.",
+        description=(
+            "Links/pointers between metadata indicate the type of relationship they share, "
+            "e.g., 'higher dose than', 'entry experiment of', etc.; "
+            "a lighter version of a graph Database/Knowledge Graph"
+        ),
+        example='{"Entry": "https://data.example.org/Study/Entry/STUDY-12345/202305v2", "ProjectStart":"https://data.example.org/Study/ProjectStart/STUDY-12345/202302v1"}',
     ),
     RDAIndicator(
         id="RDA-F1-02M",
@@ -153,7 +163,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "organisation's own infrastructure. UUIDs assigned by a local LIMS without "
             "a globally registered namespace do NOT qualify."
         ),
-        example="DOI 10.5281/zenodo.7654321 is globally unique; 'dataset-001' in an internal LIMS is not.",
+        description=(
+            "Any use of controlled vocabularies across metadata are explicitly associated with "
+            "an ontology service identifier and/or external ontology ID"
+        ),
+        example="Machine-readable values are replaced with human-readable for download and viewing",
     ),
     RDAIndicator(
         id="RDA-F1-02D",
@@ -168,7 +182,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "If metadata and data share a single PID (common in repositories like Zenodo), "
             "score both F1-01D and F1-02D as compliant."
         ),
-        example="Each compound assay record in ChEMBL is assigned a globally unique ChEMBL ID.",
+        description=(
+            "If possible, study data are directly interoperable and indicate other/previous "
+            "associated data from the same compound, modality testing, analyte, etc."
+        ),
+        example="Column 'See Also' within data or similar, including additional clinical studies examining same gene/mutation",
     ),
 
     # ── F2: Data described with rich metadata ─────────────────────────────
@@ -189,10 +207,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "collection methodology, and any processing steps applied. "
             "Richer metadata = more findable by researchers with specific needs."
         ),
-        example=(
-            "A bioassay metadata record includes: assay type (cell viability), cell line (Jurkat), "
-            "passage number, instrument (Vi-CELL XR), date, operator, and QC pass/fail flag."
+        description=(
+            "Data lakes and infrastructure systems should be built on standard cloud platforms "
+            "using infrastructure-as-code and within the confines of enterprise governance, "
+            "identity, and access management requirements"
         ),
+        example="Enterprise IT standards and approved cloud infrastructure (data lake, processing platforms, etc.) are used",
     ),
 
     # ── F3: Metadata explicitly includes the data identifier ─────────────
@@ -209,10 +229,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "relationType='IsDescribedBy'). It is not sufficient for the data and metadata "
             "to share a landing page — the metadata record must explicitly point to the data PID."
         ),
-        example=(
-            "A DataCite metadata XML record contains a <relatedIdentifier relationType='IsMetadataFor'> "
-            "pointing to the data DOI."
+        description=(
+            "Any use of controlled vocabularies across data are explicitly associated with "
+            "an ontology service identifier and/or external ontology ID"
         ),
+        example="Machine-readable values are replaced with human-readable for download and viewing",
     ),
 
     # ── F4: Metadata registered/indexed in a searchable resource ─────────
@@ -229,7 +250,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "schema.org markup, or DataCite/Crossref APIs). Registration in a domain repository "
             "(e.g., ChEMBL, EBI, Zenodo, Figshare, FAIRsharing) that exposes OAI-PMH satisfies this."
         ),
-        example="Dataset registered in Zenodo; metadata harvested by DataCite, Google Dataset Search.",
+        description=(
+            "Links/pointers between data within datasets indicate the type of relationship the data share, "
+            "e.g., 'higher dose than', 'entry experiment of', etc."
+        ),
+        example="Add key columns in data for rows - Decreases, Increases, Inhibits, etc.",
     ),
 
     # ── A1: Retrievable by identifier via standardised protocol ──────────
@@ -246,10 +271,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "requirements, licence, and contact information if data is not openly accessible. "
             "The access information must be machine-readable."
         ),
-        example=(
-            "A metadata record contains an 'accessURL' pointing to a REST API endpoint "
-            "and an 'accessRights' field stating 'Controlled access — apply via DAC'."
+        description=(
+            "Particularly important for clinical data, allow a user to obtain and view restrictions "
+            "on a dataset's specific use requirements"
         ),
+        example="Metadata view/download includes a license description and/or link",
     ),
     RDAIndicator(
         id="RDA-A1-02D",
@@ -262,6 +288,7 @@ RDA_INDICATORS: list[RDAIndicator] = [
         guidance=(
             "Standard terms and language are used to describe provenance for data and metadata."
         ),
+        description="Standard terms and language are used to describe provenance for data and metadata",
         example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
     ),
     RDAIndicator(
@@ -277,7 +304,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "requiring a subscription or institutional authentication satisfies this. "
             "Check that the API is documented and publicly reachable."
         ),
-        example="The Zenodo REST API returns full metadata in JSON-LD for any record without authentication.",
+        description=(
+            "Standard formats, terminologies, and value expressions are used in data displays "
+            "for machine recognition"
+        ),
+        example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
     ),
     RDAIndicator(
         id="RDA-A1-03D",
@@ -290,6 +321,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
         guidance=(
             "If available, metadata follows a known, accepted recording template "
             "(e.g., a community standard or repository schema)."
+        ),
+        description=(
+            "If available, metadata follows a known, accepted recording template "
+            "(e.g., a community standard or repository schema)"
         ),
         example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
     ),
@@ -305,6 +340,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "If available, data follows a known, accepted recording template "
             "(e.g., a single source experimental design)."
         ),
+        description=(
+            "If available, data follows a known, accepted recording template "
+            "(e.g., a single source experimental design)"
+        ),
         example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
     ),
     RDAIndicator(
@@ -319,7 +358,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "A process is included that allows a sufficiently credentialed user to load a new "
             "file/dataset for viewing while assigning appropriate metadata for the backend."
         ),
-        example='"Upload new data" button backed by a standard HTTP/REST API.',
+        description=(
+            "A process is included that allows a sufficiently credentialed user to load a new "
+            "file/dataset for viewing while assigning appropriate metadata for backend"
+        ),
+        example='"Upload new data" button',
     ),
     RDAIndicator(
         id="RDA-A1-04M",
@@ -334,7 +377,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "responds with appropriate content-type (JSON-LD, Turtle, XML), and returns "
             "a well-formed metadata record."
         ),
-        example="curl -H 'Accept: application/ld+json' https://zenodo.org/api/records/7654321 returns JSON-LD.",
+        description=(
+            "If available, metadata follows a known, accepted template which leverages "
+            "already controlled or otherwise machine-readable information"
+        ),
+        example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
     ),
 
     RDAIndicator(
@@ -349,7 +396,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Path of production, use, and contents for data and metadata are included in metadata: "
             "created by, modified by, created on, source, etc."
         ),
-        example='{"Created By":"A Person", "Modified By":"Another Person", "Created On":"01/01/2024", "Source":"Internal"}',
+        description=(
+            "Path of production, use, and contents for data and metadata are included in metadata; "
+            "created by, modified by, created on, etc."
+        ),
+        example='{"Created By":"A Person", "Modified By": "Another Person", "Created On":"01/01/2024 0000","Source":"Internal"}',
     ),
 
     # ── A1.1: Protocol is open, free, universally implementable ──────────
@@ -366,7 +417,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "vendor-specific LIMS APIs requiring a licence) do not qualify. "
             "The protocol specification must be publicly available."
         ),
-        example="OAI-PMH over HTTP is an open, free, standards-body-maintained protocol.",
+        description=(
+            "If relevant, metadata contain an identifier for a standardized reuse licence, "
+            "not necessarily one that is source-specific - including version information"
+        ),
+        example='{"License":"MIT Open License"}',
     ),
     RDAIndicator(
         id="RDA-A1.1-01D",
@@ -380,7 +435,16 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Same criteria as A1.1-01M applied to data access. HTTP(S), FTP, S3 with public "
             "access qualify. Proprietary streaming protocols or vendor-locked APIs do not."
         ),
-        example="Data downloadable via HTTPS without vendor software or institutional subscription.",
+        description=(
+            "Any attributes, columns, or other key information is linked to external identifiers "
+            "where needed, through ontology services, controlled vocabularies, or other reference "
+            "systems, rather than relying on a single internal value"
+        ),
+        example=(
+            '"Species" links to an ontology term such as NCIT C45293 '
+            "(https://www.ebi.ac.uk/ols/ontologies/ncit/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FNCIT_C45293), "
+            "and other ontology synonyms, rather than a singular value"
+        ),
     ),
 
     # ── A1.2: Protocol allows authentication/authorisation ────────────────
@@ -400,7 +464,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Agreement, API key request form). The process itself must be findable from the "
             "metadata record."
         ),
-        example="Restricted genomic dataset specifies a DAC email and MTA template in its metadata.",
+        description=(
+            "If relevant, metadata contain a link to a standardized reuse licence, "
+            "not necessarily one that is source-specific"
+        ),
+        example="Link to MIT license",
     ),
 
     # ── A2: Metadata persists even if data is gone ────────────────────────
@@ -418,10 +486,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "DataCite, Zenodo, and most certified digital repositories (CoreTrustSeal). "
             "A metadata record hosted only in the same system as the data does not qualify."
         ),
-        example=(
-            "Data is stored in an internal LIMS but its metadata is also deposited in DataCite, "
-            "which commits to permanent metadata retention even if the LIMS is decommissioned."
+        description=(
+            "Metadata can be obtained in a JSON/XML (machine-readable) or TSV/CSV (human readable) format"
         ),
+        example="Download from UI or obtained from API metadata selection enabled",
     ),
 
     # ── I1: Formal knowledge representation language ──────────────────────
@@ -438,7 +506,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Tabular formats (CSV, Excel) and unstructured text do NOT qualify. "
             "Structured XML with a published schema is PARTIAL compliance."
         ),
-        example="Dataset metadata is expressed as JSON-LD using schema.org and DCAT-AP vocabularies.",
+        description=(
+            "Any data representation uses templated or otherwise human-readable column names, "
+            "value representation, and standard file formats for download (XLSX, TSV, CSV, etc.)"
+        ),
+        example="Download from UI or obtained from API metadata selection enabled",
     ),
     RDAIndicator(
         id="RDA-I1-01D",
@@ -454,7 +526,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Proprietary binary formats (e.g., vendor instrument output) are NOT compliant "
             "unless a public specification exists."
         ),
-        example="NMR spectra stored in JCAMP-DX format with a published, openly accessible specification.",
+        description=(
+            "Metadata for related studies (e.g. hierarchical study levels such as project -> study -> experiment) "
+            "are hierarchically associated within the metadata as are related experimental models, "
+            "analytes, reagents, etc."
+        ),
+        example='{"Entry": "https://data.example.org/Study/Entry/STUDY-12345/202305v2", "ProjectStart":"https://data.example.org/Study/ProjectStart/STUDY-12345/202302v1"}',
     ),
     RDAIndicator(
         id="RDA-I1-02M",
@@ -469,7 +546,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Free-text descriptions and HTML pages without structured markup are NOT. "
             "JSON without a schema/context is PARTIAL."
         ),
-        example="schema.org/Dataset markup embedded in a repository landing page enables Google Dataset Search indexing.",
+        description=(
+            "Metadata describing a specific study has direct pointers to not only its own "
+            "associated data, but related studies/experiments of the same model, modality, etc."
+        ),
+        example="Column 'See Also' within data or similar, including additional clinical studies examining same gene/mutation",
     ),
     RDAIndicator(
         id="RDA-I1-02D",
@@ -484,7 +565,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "can implement. Avoid proprietary binary files without public specs. "
             "CSV with a published data dictionary is PARTIAL; CSV with no schema is NOT compliant."
         ),
-        example="Compound assay data stored in SDF format with a public MDL spec can be parsed by RDKit, OpenBabel.",
+        description=(
+            "Metadata tags and fields which use controlled vocabulary or other standard information "
+            "(e.g. study id) will include an alias, synonym in the form of an ontology identifier "
+            "or similar machine-interpretable value"
+        ),
+        example="NCIT, DOID, or other ontology identifiers for values and concepts, 'raw' data column names stored",
     ),
 
     # ── I2: FAIR vocabularies ─────────────────────────────────────────────
@@ -504,10 +590,13 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Schema.org, Dublin Core, DCAT. Non-FAIR: in-house codebooks without PIDs, "
             "local abbreviation lists with no public documentation."
         ),
-        example=(
-            "Assay type field uses OBI:0000070 ('assay') — OBI is registered in BioPortal, "
-            "has a DOI, machine-readable OWL format, and is openly accessible."
+        description=(
+            "Metadata fields for structured data include information on the experimental model, "
+            "procedure(s), reagents, analytes, etc. to enable interoperability. Additionally, "
+            "metadata are using documented controlled vocabulary sources where possible "
+            "(able to look at the metadata phase)."
         ),
+        example="Mouse vs. mus musculus vs. C57/BL6 resolve to the same information",
     ),
     RDAIndicator(
         id="RDA-I2-01D",
@@ -522,7 +611,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "reference ontology terms (e.g., include OBI IDs alongside human-readable labels). "
             "Free-text values with no ontology linkage are NOT compliant."
         ),
-        example="A CSV column 'assay_type' contains values like 'OBI:0001827 | trypan blue exclusion assay'.",
+        description=(
+            "Data fields are described using synonym/alias information for result values, "
+            "column names, and other aspects of data representation"
+        ),
+        example="Where relevant, coded representation (e.g., 1 = Male, 2 = Female, 999 = Unknown) within a JSON/XML/etc. is applied",
     ),
 
     # ── I3: Qualified references to other (meta)data ──────────────────────
@@ -542,10 +635,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "relationType values (IsCitedBy, IsVersionOf, IsDerivedFrom, IsPartOf). "
             "In schema.org: 'isBasedOn', 'citation'. Bare hyperlinks without relationship type = NOT compliant."
         ),
-        example=(
-            "DataCite record contains: relatedIdentifier DOI of the source protocol "
-            "with relationType='IsCompiledBy' and a publication DOI with relationType='IsSupplementTo'."
+        description=(
+            "Using an enterprise GUID standard, a resolvable GUID is available and assigned to the metadata entity"
         ),
+        example="https://metadata.example.org/Study/invitroPD/COMPOUND-001/202402v1",
     ),
     RDAIndicator(
         id="RDA-I3-01D",
@@ -560,7 +653,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "E.g., a gene expression dataset referencing compound by ChEMBL ID, "
             "or a protein structure referencing UniProt accession."
         ),
-        example="Each row in an HTS dataset includes a ChEMBL_ID column linking to the compound's canonical entry.",
+        description=(
+            "Indicate whether the data associated with each entity present has a persistent identifier, "
+            "enabling provenance tracing, traceback, filtering, and resolution "
+            "(e.g., internal identifier linked to a globally unique identifier standard)"
+        ),
+        example="COMPOUND-001; COMPOUND-002",
     ),
     RDAIndicator(
         id="RDA-I3-02M",
@@ -574,7 +672,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "E.g., the study-level metadata references sub-dataset metadata records, "
             "the dataset metadata references the project metadata, etc., using typed links."
         ),
-        example="A study-level DataCite record includes HasPart relationships to each constituent dataset DOI.",
+        description=(
+            'A field within the metadata structure includes "Study ID"; "Study"; "Experiment ID"; or similar'
+        ),
+        example='{"Study ID": "STUDY-001"}',
     ),
     RDAIndicator(
         id="RDA-I3-02D",
@@ -589,7 +690,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "A genomics dataset linking to proteomics data from the same study "
             "using resolvable PIDs with typed relationships."
         ),
-        example="Proteomics dataset contains a column 'genomics_ref' with DOIs pointing to the paired WGS dataset.",
+        description=(
+            "API, FTP, and/or other programmatically accessible resources are available for the data product"
+        ),
+        example="backend API is active",
     ),
     RDAIndicator(
         id="RDA-I3-03M",
@@ -604,7 +708,10 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "instrument models (referenced by their manufacturer ID or RRID) should be included "
             "as typed relatedIdentifier entries."
         ),
-        example="DataCite record includes relatedIdentifier pointing to protocols.io DOI with relationType='IsCompiledBy'.",
+        description=(
+            "Using an enterprise GUID standard, a resolvable GUID is available and assigned to the data entity"
+        ),
+        example="https://data.example.org/Study/invitroPD/COMPOUND-001/202402v1",
     ),
     RDAIndicator(
         id="RDA-I3-04M",
@@ -618,7 +725,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "The metadata record should declare which schema or application profile it conforms to. "
             "E.g., a DCAT-AP profile URI, a DataCite schema version, or an ISA-Tab profile reference."
         ),
-        example="Metadata record declares conformance to DCAT-AP 2.1 via 'conformsTo' property.",
+        description=(
+            "Indicate whether the metadata associated with each entity present has a persistent identifier, "
+            "enabling provenance tracing, traceback, filtering, and resolution "
+            "(e.g., internal identifier linked to a globally unique identifier standard)"
+        ),
+        example="COMPOUND-001; COMPOUND-002",
     ),
 
     # ── R1: Richly described with accurate, relevant attributes ──────────
@@ -638,9 +750,13 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "data quality indicators, known limitations, intended use cases. "
             "Compare against community metadata standards (MIAME, MIABI, ISA-Tab) for the domain."
         ),
+        description=(
+            "Either a GUID or other identifier specific to the data resolves to a view/download "
+            "of the data (UI, API ID, etc.)"
+        ),
         example=(
-            "A flow cytometry dataset metadata includes: panel configuration, gating strategy, "
-            "instrument settings, cell density, staining protocol version, and known batch effects."
+            "Go to landing page through - https://data.example.org/Study/invitroPD/COMPOUND-001/202402v1 "
+            "or directly download data object through API identifier"
         ),
     ),
 
@@ -658,7 +774,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "and prevents legal reuse. Acceptable: CC BY 4.0, CC0, MIT, Apache 2.0, ODbL. "
             "Look for a 'license' or 'rights' field in the metadata record."
         ),
-        example="DataCite record contains rights='Creative Commons Attribution 4.0 International' with the CC BY 4.0 URL.",
+        description=(
+            "A system within the UI, user-accessible API, or other mechanism allows viewing and/or "
+            "download of data - e.g. a data viewing and integration system within the UI, "
+            "data download packages, etc."
+        ),
+        example="Search by analyte, study ID, model system",
     ),
     RDAIndicator(
         id="RDA-R1.1-02M",
@@ -674,7 +795,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "Custom or bespoke licences reduce interoperability and reuse. "
             "Check for the canonical licence URL in the metadata."
         ),
-        example="License URI https://creativecommons.org/licenses/by/4.0/ is a canonical standard licence.",
+        description=(
+            "Standard protocols include HTTP/HTTPS (UI-based access) and API/FTP (programmatic access), "
+            "allowing authorized users to view study and other associated data"
+        ),
+        example="An authorized user is able to access data and metadata through UI/API",
     ),
     RDAIndicator(
         id="RDA-R1.1-03M",
@@ -689,7 +814,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "automated licence compliance checking. A plain text description of a licence "
             "is NOT machine-understandable. Check for 'spdxExpression' or licence URI fields."
         ),
-        example="PyPI package metadata uses SPDX 'CC-BY-4.0' — parseable by licence compliance tools.",
+        description=(
+            "Assuming the same restrictions are not imposed on it/them, the descriptive metadata "
+            "for any data may still be found after access to data itself is no longer allowed"
+        ),
+        example="Statement included in license document",
     ),
 
     # ── R1.2: Detailed provenance ─────────────────────────────────────────
@@ -709,7 +838,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "W3C PROV-O, PAV ontology, and Dublin Core creator/date are cross-domain standards. "
             "A free-text 'notes' field is NOT compliant."
         ),
-        example="Metadata uses PROV-O terms: prov:wasGeneratedBy pointing to an activity with prov:startedAtTime.",
+        description=(
+            "Either a GUID or other identifier specific to the metadata resolves to a view/download "
+            "of the metadata"
+        ),
+        example="Go to landing page through - https://metadata.example.org/Study/invitroPD/COMPOUND-001/202402v1",
     ),
     RDAIndicator(
         id="RDA-R1.2-02M",
@@ -727,7 +860,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "For pharma: audit trails in ELN records, 21 CFR Part 11 compliant signatures, "
             "ALCOA+ attributes (Attributable, Legible, Contemporaneous, Original, Accurate)."
         ),
-        example="Assay metadata recorded in Benchling ELN with signed audit trail meets ALCOA+ for 21 CFR Part 11.",
+        description=(
+            "The metadata contains a field, or set of fields, which include resolvable digital "
+            "resources where associated data are housed within the associated data lake"
+        ),
+        example="Search by analyte, study ID, model system",
     ),
 
     # ── R1.3: Domain-relevant community standards ─────────────────────────
@@ -748,7 +885,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "BIDS (neuroimaging), DataCite Metadata Schema (general research data). "
             "Verify that required fields of the standard are present and populated."
         ),
-        example="Transcriptomics data metadata complies with MIAME standard — all 6 mandatory elements present.",
+        description=(
+            "Standard protocols include HTTP/HTTPS (UI-based access) and API/FTP (programmatic access), "
+            "allowing authorized users to view study and other metadata"
+        ),
+        example="An authorized user is able to access data and metadata through UI/API",
     ),
     RDAIndicator(
         id="RDA-R1.3-01D",
@@ -763,7 +904,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "SDF/MOL2/SMILES (chemistry), DICOM (medical imaging), CIF (crystallography). "
             "Check that the file validates against the standard's schema or format specification."
         ),
-        example="Mass spectrometry data exported as mzML using ProteoWizard msConvert — passes mzML schema validation.",
+        description=(
+            "Access to any data and metadata is controlled through regulations/policies held by "
+            "the data governance function. These can also include enterprise access management "
+            "and identity systems, if possible"
+        ),
+        example="API token(s) assigned, landing pages present behind login/SSO walls",
     ),
     RDAIndicator(
         id="RDA-R1.3-02M",
@@ -781,7 +927,11 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "ISA-Tab has a published schema; BIDS has a JSON schema; DataCite has an XML schema. "
             "Compliance requires that the metadata validates against the schema, not just follows it informally."
         ),
-        example="ISA-Tab investigation file validated with the isatools Python library confirms schema compliance.",
+        description=(
+            "Any restrictions on use, length of time accessible/restricted, and original source(s) "
+            "of data and metadata are recorded and visible to users"
+        ),
+        example='"License" tab/document present on viewer pages',
     ),
     RDAIndicator(
         id="RDA-R1.3-02D",
@@ -798,7 +948,12 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "BIDS data validates with the BIDS-validator, NMR data validates with NMReDATA validator. "
             "Partial compliance: format follows the standard but has not been formally validated."
         ),
-        example="VCF file passes 'bcftools stats' without errors — confirms well-formed compliance.",
+        description=(
+            "A system within the UI, user-accessible API, or other mechanism allows viewing and/or "
+            "download of metadata - e.g. column headers in a UI, a metadata CSV contained in "
+            "a download package, etc."
+        ),
+        example="Search by analyte, study ID, model system",
     ),
 ]
 

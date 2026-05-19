@@ -113,8 +113,18 @@ function update(field, value) {
     <transition name="slide">
       <div v-if="expanded" class="px-3 pb-3 border-t border-gray-100">
         <!-- Question / guidance -->
-        <p class="text-xs text-gray-500 mt-2 mb-3 leading-relaxed">
+        <p class="text-xs text-gray-500 mt-2 mb-1 leading-relaxed">
           <span class="font-semibold text-gray-600">Q: </span>{{ indicator.question }}
+        </p>
+
+        <!-- Description -->
+        <p v-if="indicator.description" class="text-xs text-gray-600 mb-1 leading-relaxed bg-gray-50 rounded px-2 py-1.5">
+          <span class="font-semibold text-gray-700">Description: </span>{{ indicator.description }}
+        </p>
+
+        <!-- Example -->
+        <p v-if="indicator.example" class="text-xs text-indigo-700 mb-3 leading-relaxed bg-indigo-50 rounded px-2 py-1.5 font-mono break-all">
+          <span class="font-semibold font-sans not-italic">Example: </span>{{ indicator.example }}
         </p>
 
         <!-- Evidence + action notes side by side -->
@@ -151,5 +161,5 @@ function update(field, value) {
   overflow: hidden;
 }
 .slide-enter-from, .slide-leave-to { max-height: 0; opacity: 0; }
-.slide-enter-to, .slide-leave-from { max-height: 240px; opacity: 1; }
+.slide-enter-to, .slide-leave-from { max-height: 420px; opacity: 1; }
 </style>
