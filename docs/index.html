@@ -5,542 +5,456 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAIR Data Toolkit — Ali Shahmohammadi</title>
   <meta name="description" content="FAIR Data Maturity Framework for Pharmaceutical R&D. Python toolkit and article series covering the RDA FAIR Maturity Model (41 indicators) and Pistoia Alliance FAIR Maturity Matrix." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg:       #0d1117;
-      --surface:  #161b22;
-      --border:   #30363d;
-      --text:     #e6edf3;
-      --muted:    #8b949e;
-      --accent:   #58a6ff;
-      --green:    #3fb950;
-      --orange:   #f78166;
-      --yellow:   #d29922;
-      --purple:   #bc8cff;
-      --teal:     #39d353;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.65; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    :root{--bg:#FAFAF7;--surface:#FFFFFF;--border:#E5E5E2;--muted:#6B6B68;--text:#1A1A1A;--accent:#2563EB;--accent-lt:#EFF6FF;--accent-mid:#BFDBFE;--green:#16A34A;--green-bg:#F0FDF4;--green-bdr:#BBF7D0;--red:#DC2626;--red-bg:#FEF2F2;--r:10px}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+    a{color:var(--accent);text-decoration:none;transition:opacity .15s}a:hover{opacity:.75}
+    code,pre{font-family:'JetBrains Mono','Fira Code',monospace}
 
-    /* ── Nav ── */
-    nav { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; }
-    .nav-brand { font-weight: 700; font-size: 1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
-    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-    .nav-links a { color: var(--muted); font-size: 0.9rem; }
-    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .nav-inner{max-width:1140px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px}
+    .nav-brand{display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:.95rem;color:var(--text);letter-spacing:-.01em}
+    .nav-brand svg{color:var(--accent)}
+    .nav-links{display:flex;gap:.25rem;list-style:none;align-items:center}
+    .nav-links a{color:var(--muted);font-size:.875rem;font-weight:500;padding:.4rem .75rem;border-radius:6px;transition:all .15s}
+    .nav-links a:hover{color:var(--text);background:var(--bg);opacity:1}
+    .nav-cta{color:var(--accent)!important;border:1px solid var(--accent-mid);background:var(--accent-lt)!important}
+    .nav-cta:hover{background:var(--accent)!important;color:#fff!important}
+    @media(max-width:768px){.nav-links li:not(:last-child){display:none}}
 
-    /* ── Hero ── */
-    .hero { padding: 5rem 2rem 4rem; text-align: center; background: linear-gradient(180deg, #0d1117 0%, #12191f 100%); border-bottom: 1px solid var(--border); }
-    .hero-tag { display: inline-block; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: var(--accent); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; padding: 0.3rem 0.8rem; border-radius: 20px; text-transform: uppercase; margin-bottom: 1.5rem; }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
-    .hero h1 span { color: var(--accent); }
-    .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 2rem; }
-    .hero-cta { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-    .btn { padding: 0.65rem 1.4rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; }
-    .btn-primary { background: var(--accent); color: #0d1117; }
-    .btn-primary:hover { background: #79c0ff; text-decoration: none; color: #0d1117; }
-    .btn-outline { border: 1px solid var(--border); color: var(--text); }
-    .btn-outline:hover { border-color: var(--accent); text-decoration: none; }
+    .container{max-width:1140px;margin:0 auto;padding:0 2rem}
+    .section{padding:5rem 0}
+    .section-alt{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 
-    /* ── Layout ── */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-    .section { padding: 4rem 0; }
-    .section-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .section-sub { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; }
+    .section-header{margin-bottom:3rem}
+    .eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+    .section-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:.75rem}
+    .section-sub{font-size:1rem;color:var(--muted);max-width:580px}
 
-    /* ── Problem / Solution ── */
-    .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
-    @media (max-width: 700px) { .ps-grid { grid-template-columns: 1fr; } }
-    .ps-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; }
-    .ps-card h3 { font-size: 1rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; }
-    .ps-card.problem h3 { color: var(--orange); }
-    .ps-card.solution h3 { color: var(--green); }
-    .ps-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-    .ps-card li { display: flex; gap: 0.7rem; font-size: 0.95rem; color: var(--muted); }
-    .ps-card li::before { flex-shrink: 0; margin-top: 0.1rem; }
-    .ps-card.problem li::before { content: "✗"; color: var(--orange); }
-    .ps-card.solution li::before { content: "✓"; color: var(--green); }
+    .hero{padding:6rem 2rem 5rem;background:var(--surface);border-bottom:1px solid var(--border);text-align:center}
+    .hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-lt);color:var(--accent);border:1px solid var(--accent-mid);font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.35rem .9rem;border-radius:99px;margin-bottom:2rem}
+    .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--text);margin-bottom:1.25rem}
+    .hero h1 .accent{color:var(--accent)}
+    .hero-sub{font-size:1.125rem;color:var(--muted);line-height:1.7;max-width:560px;margin:0 auto 2.5rem}
+    .hero-cta{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.4rem;border-radius:8px;font-size:.9rem;font-weight:600;transition:all .15s;cursor:pointer;border:none;white-space:nowrap}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:#1D4ED8;opacity:1}
+    .btn-outline{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .btn-outline:hover{border-color:var(--accent);color:var(--accent);opacity:1}
 
-    /* ── Framework cards ── */
-    .framework-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
-    @media (max-width: 700px) { .framework-grid { grid-template-columns: 1fr; } }
-    .framework-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
-    .framework-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .framework-card .fw-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem; }
-    .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
-    .tag { background: rgba(88,166,255,0.12); color: var(--accent); border: 1px solid rgba(88,166,255,0.25); border-radius: 6px; font-size: 0.78rem; padding: 0.2rem 0.55rem; }
-    .tag.green { background: rgba(63,185,80,0.12); color: var(--green); border-color: rgba(63,185,80,0.25); }
-    .tag.purple { background: rgba(188,140,255,0.12); color: var(--purple); border-color: rgba(188,140,255,0.25); }
-    .tag.yellow { background: rgba(210,153,34,0.12); color: var(--yellow); border-color: rgba(210,153,34,0.25); }
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    @media(max-width:700px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+    .stat{background:var(--surface);padding:2rem 1.5rem;text-align:center}
+    .stat-num{font-size:2.4rem;font-weight:800;color:var(--accent);letter-spacing:-.03em;line-height:1}
+    .stat-label{font-size:.825rem;color:var(--muted);margin-top:.4rem;font-weight:500}
 
-    /* ── Maturity levels ── */
-    .levels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
-    @media (max-width: 900px) { .levels-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 500px) { .levels-grid { grid-template-columns: 1fr; } }
-    .level-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; }
-    .level-icon { font-size: 2rem; margin-bottom: 0.6rem; }
-    .level-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .level-desc { font-size: 0.85rem; color: var(--muted); }
+    .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:700px){.ps-grid{grid-template-columns:1fr}}
+    .ps-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2rem}
+    .ps-head{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem}
+    .ps-head h3{font-size:.9rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    .problem .ps-head h3{color:var(--red)}
+    .solution .ps-head h3{color:var(--green)}
+    .ps-card ul{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+    .ps-card li{display:flex;align-items:flex-start;gap:.75rem;font-size:.9rem;color:var(--muted);line-height:1.5}
+    .li-icon{flex-shrink:0;margin-top:1px}
+    .problem .li-icon{color:var(--red)}
+    .solution .li-icon{color:var(--green)}
 
-    /* ── Articles ── */
-    .articles-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
-    .article-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1.8rem; display: grid; grid-template-columns: 2.5rem 1fr; gap: 1rem; align-items: start; }
-    .article-num { font-size: 1.4rem; font-weight: 800; color: var(--accent); opacity: 0.6; }
-    .article-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .article-desc { font-size: 0.9rem; color: var(--muted); }
+    .fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:700px){.fw-grid{grid-template-columns:1fr}}
+    .fw-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2rem}
+    .fw-icon-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+    .fw-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .fw-card h3{font-size:1rem;font-weight:700;margin-bottom:.25rem}
+    .fw-sub{color:var(--muted);font-size:.8rem;margin-bottom:1rem}
+    .fw-card p{font-size:.9rem;color:var(--muted);line-height:1.6}
+    .tag-row{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.25rem}
+    .tag{background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:6px;font-size:.75rem;font-weight:500;padding:.2rem .6rem}
+    .tag.blue{background:var(--accent-lt);color:var(--accent);border-color:var(--accent-mid)}
+    .tag.green{background:var(--green-bg);color:var(--green);border-color:var(--green-bdr)}
 
-    /* ── Install ── */
-    .install-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-top: 2rem; }
-    pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem 1.5rem; overflow-x: auto; font-size: 0.88rem; margin: 1rem 0; }
-    code { font-family: "Fira Code", "Cascadia Code", monospace; }
-    .kw { color: var(--purple); }
-    .fn { color: var(--accent); }
-    .st { color: var(--green); }
-    .cm { color: var(--muted); }
-    .nu { color: var(--yellow); }
+    .levels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}
+    @media(max-width:900px){.levels-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:500px){.levels-grid{grid-template-columns:1fr}}
+    .level-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
+    .level-badge{display:inline-block;background:var(--accent-lt);color:var(--accent);border:1px solid var(--accent-mid);font-size:.7rem;font-weight:700;letter-spacing:.05em;padding:.2rem .5rem;border-radius:5px;margin-bottom:.75rem}
+    .level-name{font-size:.925rem;font-weight:700;margin-bottom:.4rem}
+    .level-desc{font-size:.84rem;color:var(--muted);line-height:1.5}
 
-    /* ── Roadmap ── */
-    .roadmap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
-    @media (max-width: 700px) { .roadmap-grid { grid-template-columns: 1fr; } }
-    .phase-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; }
-    .phase-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.8rem; }
-    .phase-1 .phase-label { color: var(--green); }
-    .phase-2 .phase-label { color: var(--purple); }
-    .phase-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; }
-    .phase-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-    .phase-card li { font-size: 0.9rem; color: var(--muted); padding-left: 1.2rem; position: relative; }
-    .phase-card li::before { content: ""; position: absolute; left: 0; top: 0.6rem; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-    .phase-2 li::before { background: var(--purple); }
-    .done li::before { background: var(--green); }
+    .articles-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    .article-card{background:var(--surface);padding:1.5rem 1.75rem;display:grid;grid-template-columns:3rem 1fr auto;gap:1.25rem;align-items:center;transition:background .15s;color:inherit}
+    .article-card:hover{background:var(--bg);opacity:1}
+    .article-num{font-size:1.5rem;font-weight:800;color:var(--border);letter-spacing:-.02em}
+    .article-title{font-size:.95rem;font-weight:600;margin-bottom:.3rem}
+    .article-desc{font-size:.875rem;color:var(--muted);line-height:1.5}
+    .article-arrow{color:var(--muted);flex-shrink:0;transition:color .15s}
+    .article-card:hover .article-arrow{color:var(--accent)}
 
-    /* ── Stats row ── */
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 2rem; }
-    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
-    .stat { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem 1rem; }
-    .stat-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
-    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+    .install-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:768px){.install-grid{grid-template-columns:1fr}}
+    .code-block{background:#F8F8F5;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    .code-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    .code-title{font-size:.78rem;font-weight:600;color:var(--muted)}
+    .code-dots{display:flex;gap:5px}
+    .code-dot{width:10px;height:10px;border-radius:50%}
+    .dot-r{background:#FC8181}.dot-y{background:#F6C90E}.dot-g{background:#68D391}
+    pre{padding:1.25rem 1.5rem;overflow-x:auto;font-size:.825rem;line-height:1.7;background:transparent}
+    .kw{color:#7C3AED;font-weight:500}.st{color:#16A34A}.cm{color:#9CA3AF;font-style:italic}.fn{color:#2563EB}
 
-    /* ── Footer ── */
-    footer { border-top: 1px solid var(--border); background: var(--surface); padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 4rem; }
-    footer a { color: var(--accent); }
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+    @media(max-width:900px){.feat-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:580px){.feat-grid{grid-template-columns:1fr}}
+    .feat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;transition:border-color .2s,box-shadow .2s}
+    .feat-card:hover{border-color:var(--accent-mid);box-shadow:0 2px 12px rgba(37,99,235,.06)}
+    .feat-icon{width:36px;height:36px;border-radius:8px;background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:.9rem}
+    .feat-title{font-size:.9rem;font-weight:700;margin-bottom:.35rem}
+    .feat-desc{font-size:.855rem;color:var(--muted);line-height:1.55}
 
-    /* ── Web App section ── */
-    .webapp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 2rem; }
-    @media (max-width: 900px) { .webapp-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px) { .webapp-grid { grid-template-columns: 1fr; } }
-    .webapp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s; }
-    .webapp-card:hover { border-color: var(--accent); }
-    .webapp-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
-    .webapp-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .webapp-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.55; }
-    .arch-stack { display: flex; flex-direction: column; align-items: stretch; gap: 0; max-width: 560px; margin-top: 1rem; }
-    .arch-layer { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.4rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
-    .arch-fe  { border-color: #42b883; }
-    .arch-api { border-color: var(--accent); }
-    .arch-db  { border-color: var(--purple); }
-    .arch-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; min-width: 72px; }
-    .arch-fe  .arch-label { color: #42b883; }
-    .arch-api .arch-label { color: var(--accent); }
-    .arch-db  .arch-label { color: var(--purple); }
-    .arch-detail { font-size: 0.88rem; color: var(--text); }
-    .arch-port { margin-left: auto; font-size: 0.78rem; color: var(--muted); font-family: monospace; }
-    .arch-connector { display: flex; align-items: center; gap: 0.8rem; padding: 0.25rem 1.6rem; }
-    .arch-connector-line { flex: 1; height: 1px; background: var(--border); }
-    .arch-connector-label { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .arch-wrap{display:flex;gap:3rem;flex-wrap:wrap;align-items:flex-start;margin-top:2.5rem}
+    .arch-stack{display:flex;flex-direction:column;min-width:280px;flex:1}
+    .arch-layer{background:var(--surface);border:1px solid var(--border);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+    .arch-layer+.arch-layer{border-top:none}
+    .arch-layer:first-child{border-radius:var(--r) var(--r) 0 0}
+    .arch-layer:last-child{border-radius:0 0 var(--r) var(--r)}
+    .arch-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .arch-fe .arch-dot{background:var(--green)}.arch-api .arch-dot{background:var(--accent)}.arch-db .arch-dot{background:#9333EA}
+    .arch-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;min-width:60px}
+    .arch-fe .arch-lbl{color:var(--green)}.arch-api .arch-lbl{color:var(--accent)}.arch-db .arch-lbl{color:#9333EA}
+    .arch-detail{font-size:.875rem;color:var(--muted);flex:1}
+    .arch-port{margin-left:auto;font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;background:var(--bg);border:1px solid var(--border);padding:.1rem .45rem;border-radius:4px}
+    .arch-conn{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem;height:28px;border-left:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg)}
+    .arch-conn-lbl{font-size:.72rem;color:var(--muted);white-space:nowrap}
+    .arch-conn-line{flex:1;height:1px;background:var(--border)}
+    .arch-qs{flex:2;min-width:300px}
+    .arch-qs-lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.75rem}
+
+    .roadmap-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:700px){.roadmap-grid{grid-template-columns:1fr}}
+    .phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2rem}
+    .phase-lbl{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+    .phase-done .phase-lbl{color:var(--green)}
+    .phase-next .phase-lbl{color:var(--accent)}
+    .phase-card h3{font-size:1rem;font-weight:700;margin-bottom:1.25rem}
+    .phase-card ul{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+    .phase-card li{display:flex;align-items:flex-start;gap:.6rem;font-size:.875rem;color:var(--muted);line-height:1.5}
+    .phase-done li svg{color:var(--green);flex-shrink:0;margin-top:2px}
+    .phase-next li svg{color:var(--accent);flex-shrink:0;margin-top:2px}
+
+    footer{border-top:1px solid var(--border);background:var(--surface);padding:2.5rem 2rem;text-align:center;color:var(--muted);font-size:.85rem}
+    footer strong{color:var(--text)}
+    .footer-links{display:flex;justify-content:center;gap:1.5rem;margin-top:.75rem;flex-wrap:wrap}
+    .footer-links a{color:var(--muted);font-size:.825rem}
+    .footer-links a:hover{color:var(--accent);opacity:1}
+    .ic{font-size:.88em;background:var(--bg);border:1px solid var(--border);padding:.1rem .4rem;border-radius:4px;font-family:'JetBrains Mono',monospace}
   </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
-    <span class="nav-brand">🧬 fair-data-toolkit</span>
+    <a href="#" class="nav-brand" style="text-decoration:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+      fair-data-toolkit
+    </a>
     <ul class="nav-links">
       <li><a href="#frameworks">Frameworks</a></li>
       <li><a href="#articles">Articles</a></li>
-      <li><a href="#install">Install</a></li>
-      <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="#webapp">Web App</a></li>
-      <li><a href="https://github.com/alishahmohammadi22/fair-data-toolkit">GitHub →</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="https://github.com/alishahmohammadi22/fair-data-toolkit" target="_blank" rel="noopener" class="nav-cta">GitHub &rarr;</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- ── Hero ── -->
 <section class="hero">
-  <div class="hero-tag">Open Source · Python · Pharmaceutical R&D</div>
-  <h1>FAIR Data <span>Maturity</span> Framework</h1>
-  <p class="hero-sub">
-    From RDA indicators to agentic AI scoring — a Python toolkit and article series
-    for measuring and improving FAIR data compliance in life sciences.
-  </p>
+  <div class="hero-pill">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    Open Source &nbsp;&middot;&nbsp; Python &nbsp;&middot;&nbsp; Pharmaceutical R&amp;D
+  </div>
+  <h1>FAIR Data <span class="accent">Maturity</span><br>Framework</h1>
+  <p class="hero-sub">A Python toolkit and article series for measuring and improving FAIR data compliance in life sciences &mdash; from manual assessments to agentic AI scoring.</p>
   <div class="hero-cta">
-    <a href="#articles" class="btn btn-primary">Read the Articles</a>
-    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit" class="btn btn-outline">View on GitHub</a>
+    <a href="#articles" class="btn btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Read the Articles
+    </a>
+    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit" target="_blank" rel="noopener" class="btn btn-outline">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      View on GitHub
+    </a>
+    <a href="https://doi.org/10.5281/zenodo.20274083" target="_blank" rel="noopener" class="btn btn-outline">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      DOI: 10.5281/zenodo.20274083
+    </a>
   </div>
 </section>
 
-<!-- ── Stats ── -->
-<div class="container">
+<div class="container" style="margin:3rem auto">
   <div class="stats-row">
     <div class="stat"><div class="stat-num">41</div><div class="stat-label">RDA Maturity Indicators</div></div>
     <div class="stat"><div class="stat-num">6</div><div class="stat-label">Pistoia Maturity Levels</div></div>
-    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Article Notebooks</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Priority Tiers</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Notebook Articles</div></div>
+    <div class="stat"><div class="stat-num">v0.2</div><div class="stat-label">Current Release</div></div>
   </div>
 </div>
 
-<!-- ── Problem / Solution ── -->
 <section class="section" id="problem">
   <div class="container">
-    <div class="section-title">The FAIR Data Problem in Pharma</div>
-    <div class="section-sub">70–80% of pharmaceutical research data is never reused. The root cause is a lack of structured, measurable FAIRness.</div>
+    <div class="section-header">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>The Problem</div>
+      <div class="section-title">FAIR Data in Pharmaceutical R&amp;D</div>
+      <p class="section-sub">70&ndash;80% of pharmaceutical research data is never reused. The root cause is a lack of structured, measurable FAIRness.</p>
+    </div>
     <div class="ps-grid">
       <div class="ps-card problem">
-        <h3>Without FAIR</h3>
+        <div class="ps-head"><svg class="li-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><h3>Without FAIR</h3></div>
         <ul>
-          <li>Data locked in proprietary LIMS with no external identifiers</li>
-          <li>No standard vocabulary — "VIAB" means different things in different systems</li>
-          <li>Access requires knowing who to email, not a documented protocol</li>
-          <li>No licence — legal ambiguity blocks pre-competitive sharing</li>
-          <li>Metadata disappears when the LIMS is decommissioned</li>
-          <li>AI/ML pipelines fail because training data is not machine-readable</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Data locked in proprietary LIMS with no external identifiers</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No standard vocabulary &mdash; &ldquo;VIAB&rdquo; means different things across systems</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Access requires knowing who to email, not a documented protocol</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No licence &mdash; legal ambiguity blocks pre-competitive sharing</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Metadata disappears when the LIMS is decommissioned</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>AI/ML pipelines fail because training data is not machine-readable</li>
         </ul>
       </div>
       <div class="ps-card solution">
-        <h3>With this Toolkit</h3>
+        <div class="ps-head"><svg class="li-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><h3>With this Toolkit</h3></div>
         <ul>
-          <li>Score all 41 RDA indicators with evidence documentation</li>
-          <li>Identify Essential gaps that block minimum FAIRness</li>
-          <li>Map your organisation to L0–L5 Pistoia maturity levels across 7 dimensions</li>
-          <li>Generate a prioritised remediation roadmap</li>
-          <li>Track progress over time with reusable JSON/CSV exports</li>
-          <li>Lay the groundwork for automated agentic FAIR scoring (Phase 2)</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Score all 41 RDA indicators with evidence documentation</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Identify Essential gaps that block minimum FAIRness</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Map your organisation to L0&ndash;L5 Pistoia levels across 7 dimensions</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Generate a prioritised remediation roadmap</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Track progress over time with reusable JSON/CSV exports</li>
+          <li><svg class="li-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Lay the groundwork for automated agentic FAIR scoring (Phase 2)</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Frameworks ── -->
-<section class="section" id="frameworks" style="background: #10161c; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section class="section section-alt" id="frameworks">
   <div class="container">
-    <div class="section-title">Two Complementary Frameworks</div>
-    <div class="section-sub">This toolkit implements both the domain-agnostic RDA model and the pharma-specific Pistoia Alliance matrix.</div>
-    <div class="framework-grid">
-      <div class="framework-card">
-        <h3>RDA FAIR Maturity Model (2020)</h3>
-        <div class="fw-sub">Research Data Alliance Working Group · doi:10.15497/rda00050</div>
-        <p style="font-size:0.92rem; color: var(--muted);">
-          The authoritative operationalisation of the 15 FAIR sub-principles into 41 measurable indicators.
-          Each indicator has a precise compliance question, guidance, and evidence requirements.
-        </p>
-        <div class="tag-row">
-          <span class="tag">41 indicators</span>
-          <span class="tag green">Essential / Important / Useful</span>
-          <span class="tag purple">Metadata + Data scope</span>
-          <span class="tag yellow">5-level scoring</span>
+    <div class="section-header">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Frameworks</div>
+      <div class="section-title">Two Complementary Frameworks</div>
+      <p class="section-sub">This toolkit implements both the domain-agnostic RDA model and the pharma-specific Pistoia Alliance matrix.</p>
+    </div>
+    <div class="fw-grid">
+      <div class="fw-card">
+        <div class="fw-icon-row">
+          <div class="fw-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg></div>
+          <div><h3>RDA FAIR Maturity Model (2020)</h3><div class="fw-sub">Research Data Alliance &middot; doi:10.15497/rda00050</div></div>
         </div>
+        <p>The authoritative operationalisation of the 15 FAIR sub-principles into 41 measurable indicators. Each has a precise compliance question, priority level, and evidence requirements.</p>
+        <div class="tag-row"><span class="tag blue">41 indicators</span><span class="tag blue">Essential / Important / Useful</span><span class="tag">Metadata + Data scope</span><span class="tag">Priority-weighted scoring</span></div>
       </div>
-      <div class="framework-card">
-        <h3>Pistoia Alliance FAIR Maturity Matrix</h3>
-        <div class="fw-sub">Pistoia Alliance Life Sciences FAIR Initiative (v1.1, CC BY 4.0)</div>
-        <p style="font-size:0.92rem; color: var(--muted);">
-          An <strong>organisational</strong> maturity model for FAIR implementation in life science organisations.
-          Structured as a 7-dimension × 6-level matrix (L0–L5). Descriptive, not prescriptive.
-          Developed by 20+ experts from AstraZeneca, BMS, Novo Nordisk, ELIXIR, GO FAIR Foundation, and others.
-        </p>
-        <div class="tag-row">
-          <span class="tag">6 maturity levels (L0–L5)</span>
-          <span class="tag green">7 organisational dimensions</span>
-          <span class="tag purple">Organisational self-assessment</span>
-          <span class="tag yellow">Life science context</span>
+      <div class="fw-card">
+        <div class="fw-icon-row">
+          <div class="fw-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div><h3>Pistoia Alliance FAIR Maturity Matrix</h3><div class="fw-sub">Pistoia Alliance Life Sciences FAIR Initiative (v1.1, CC BY 4.0)</div></div>
         </div>
+        <p>An <strong>organisational</strong> maturity model for FAIR implementation in life science organisations. 7-dimension &times; 6-level matrix (L0&ndash;L5). Developed by 20+ experts from AstraZeneca, BMS, Novo Nordisk, ELIXIR, and GO FAIR Foundation.</p>
+        <div class="tag-row"><span class="tag green">6 maturity levels (L0&ndash;L5)</span><span class="tag green">7 organisational dimensions</span><span class="tag">Life science context</span><span class="tag">Self-assessment</span></div>
       </div>
     </div>
-
-    <!-- Pistoia levels -->
-    <div style="margin-top: 2.5rem;">
-      <div class="section-title" style="font-size:1.2rem;">Pistoia Maturity Levels (L0–L5)</div>
+    <div style="margin-top:3rem">
+      <div class="eyebrow" style="margin-bottom:1rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Pistoia Maturity Levels</div>
       <div class="levels-grid">
-        <div class="level-card">
-          <div class="level-icon">🏚️</div>
-          <div class="level-name">L0 — Life is unFAIR</div>
-          <div class="level-desc">Junkyard. Data silos, no metadata standards. No FAIR awareness or leadership engagement.</div>
-        </div>
-        <div class="level-card">
-          <div class="level-icon">🛍️</div>
-          <div class="level-name">L1 — Started the FAIR Journey</div>
-          <div class="level-desc">Flea market. FAIR awareness starts; first pilots emerge. Identifiers and metadata beginning.</div>
-        </div>
-        <div class="level-card">
-          <div class="level-icon">🏪</div>
-          <div class="level-name">L2 — Getting FAIR</div>
-          <div class="level-desc">Street Market. Pilots in place. Data cataloged; local models; POC infrastructure deployed.</div>
-        </div>
-        <div class="level-card">
-          <div class="level-icon">🏬</div>
-          <div class="level-name">L3 — Pretty FAIR</div>
-          <div class="level-desc">Specialized Local Markets. Domain-level models; machine interpretation locally; COTS tools deployed.</div>
-        </div>
-        <div class="level-card">
-          <div class="level-icon">🛒</div>
-          <div class="level-name">L4 — Really FAIR</div>
-          <div class="level-desc">Hyper Market. FAIR pervasive; GUPRIs; cross-domain standards; enterprise interoperability.</div>
-        </div>
-        <div class="level-card">
-          <div class="level-icon">🌐</div>
-          <div class="level-name">L5 — FAIRest of Them All</div>
-          <div class="level-desc">Digital Online Store. Aspirational. Self-describing objects; machine actionability; ecosystem interoperability.</div>
-        </div>
+        <div class="level-card"><div class="level-badge">L0</div><div class="level-name">Life is unFAIR</div><div class="level-desc">Data silos, no metadata standards, no FAIR awareness or leadership engagement.</div></div>
+        <div class="level-card"><div class="level-badge">L1</div><div class="level-name">Started the FAIR Journey</div><div class="level-desc">FAIR awareness emerging; first pilots; identifiers and metadata beginning.</div></div>
+        <div class="level-card"><div class="level-badge">L2</div><div class="level-name">Getting FAIR</div><div class="level-desc">Pilots in place; data catalogued; local models; proof-of-concept infrastructure deployed.</div></div>
+        <div class="level-card"><div class="level-badge">L3</div><div class="level-name">Pretty FAIR</div><div class="level-desc">Domain-level models; machine interpretation locally; COTS tools deployed.</div></div>
+        <div class="level-card"><div class="level-badge">L4</div><div class="level-name">Really FAIR</div><div class="level-desc">FAIR pervasive; GUPRIs; cross-domain standards; enterprise interoperability.</div></div>
+        <div class="level-card"><div class="level-badge">L5</div><div class="level-name">FAIRest of Them All</div><div class="level-desc">Self-describing objects; machine actionability; ecosystem interoperability.</div></div>
       </div>
-      <p style="font-size:0.82rem; color: var(--muted); margin-top:1rem;">
-        Each level is assessed across 7 dimensions: FAIR data · FAIR leadership · FAIR strategy ·
-        FAIR roles · FAIR processes · FAIR knowledge · FAIR tools &amp; infrastructures.
-        Source: <a href="https://pistoiaalliance.github.io/FAIRMaturityMatrix/" target="_blank" rel="noopener" style="color:var(--accent)">pistoiaalliance.github.io/FAIRMaturityMatrix</a> (v1.1, CC BY 4.0)
-      </p>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:1rem">Assessed across 7 dimensions: FAIR data &middot; leadership &middot; strategy &middot; roles &middot; processes &middot; knowledge &middot; tools &amp; infrastructure. &middot; <a href="https://pistoiaalliance.github.io/FAIRMaturityMatrix/" target="_blank" rel="noopener">pistoiaalliance.github.io/FAIRMaturityMatrix</a></p>
     </div>
   </div>
 </section>
 
-<!-- ── Articles ── -->
 <section class="section" id="articles">
   <div class="container">
-    <div class="section-title">Article Series</div>
-    <div class="section-sub">Five Jupyter notebooks covering FAIR theory, both frameworks, and a hands-on assessment walkthrough.</div>
+    <div class="section-header">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Article Series</div>
+      <div class="section-title">Five Notebooks, End to End</div>
+      <p class="section-sub">From first principles to a fully scored assessment &mdash; each article builds on the last.</p>
+    </div>
     <div class="articles-list">
-      <div class="article-card">
+      <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/blob/main/notebooks/01_introduction_to_fair.ipynb" target="_blank" rel="noopener" class="article-card">
         <div class="article-num">01</div>
-        <div>
-          <div class="article-title">Introduction to FAIR Data Principles</div>
-          <div class="article-desc">The 15 FAIR sub-principles, FAIR vs Open, why FAIRness matters in pharmaceutical R&amp;D, and the key stakeholders (GO FAIR, RDA, Pistoia Alliance).</div>
-        </div>
-      </div>
-      <div class="article-card">
+        <div><div class="article-title">Introduction to FAIR Data Principles</div><div class="article-desc">The 15 FAIR sub-principles, FAIR vs Open, why FAIRness matters in pharmaceutical R&amp;D, and key stakeholders.</div></div>
+        <svg class="article-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/blob/main/notebooks/02_rda_fair_maturity_model.ipynb" target="_blank" rel="noopener" class="article-card">
         <div class="article-num">02</div>
-        <div>
-          <div class="article-title">The RDA FAIR Maturity Model In Depth</div>
-          <div class="article-desc">A complete guide to all 41 RDA indicators. Scoring system, priority levels, deep dive into F/A/I/R indicators, and a worked gap analysis on a synthetic pharma dataset.</div>
-        </div>
-      </div>
-      <div class="article-card">
+        <div><div class="article-title">The RDA FAIR Maturity Model In Depth</div><div class="article-desc">A complete guide to all 41 RDA indicators, scoring system, priority levels, and a worked gap analysis on a synthetic pharma dataset.</div></div>
+        <svg class="article-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/blob/main/notebooks/03_pistoia_fair_maturity_matrix.ipynb" target="_blank" rel="noopener" class="article-card">
         <div class="article-num">03</div>
-        <div>
-          <div class="article-title">The Pistoia Alliance FAIR Maturity Matrix</div>
-          <div class="article-desc">The correct Pistoia Alliance FAIR Maturity Matrix: 6 levels (L0–L5) × 7 organisational dimensions (data, leadership, strategy, roles, processes, knowledge, tools). Organisational self-assessment walkthrough.</div>
-        </div>
-      </div>
-      <div class="article-card">
+        <div><div class="article-title">The Pistoia Alliance FAIR Maturity Matrix</div><div class="article-desc">6 levels (L0&ndash;L5) &times; 7 organisational dimensions. Full self-assessment walkthrough with evidence documentation and maturity scoring.</div></div>
+        <svg class="article-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/blob/main/notebooks/04_manual_fair_assessment_walkthrough.ipynb" target="_blank" rel="noopener" class="article-card">
         <div class="article-num">04</div>
-        <div>
-          <div class="article-title">Manual FAIR Assessment Walkthrough</div>
-          <div class="article-desc">Full end-to-end assessment of a CAR-T cell viability dataset (STD-2024-CART-001) against all 41 RDA indicators. Rich scorecard output, CSV export, and a three-phase remediation roadmap.</div>
-        </div>
-      </div>
-      <div class="article-card">
+        <div><div class="article-title">Manual FAIR Assessment Walkthrough</div><div class="article-desc">End-to-end assessment of a CAR-T cell viability dataset against all 41 RDA indicators &mdash; scorecard output, CSV export, and a three-phase remediation roadmap.</div></div>
+        <svg class="article-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/blob/main/notebooks/05_fair_score_calculator.ipynb" target="_blank" rel="noopener" class="article-card">
         <div class="article-num">05</div>
-        <div>
-          <div class="article-title">Automated FAIR Score Calculator</div>
-          <div class="article-desc">Semi-automated scoring from the Zenodo REST API. Architecture design for the agentic FAIRAssessorAgent (LangGraph + GPT) — the next module in this series.</div>
-        </div>
-      </div>
+        <div><div class="article-title">Automated FAIR Score Calculator</div><div class="article-desc">Semi-automated scoring via the Zenodo REST API. Architecture design for the agentic FAIRAssessorAgent using LangGraph and GPT.</div></div>
+        <svg class="article-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ── Install ── -->
-<section class="section" id="install" style="background: #10161c; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section class="section section-alt" id="install">
   <div class="container">
-    <div class="section-title">Install &amp; Quick Start</div>
-    <div class="install-block">
-      <p style="color:var(--muted); margin-bottom:0.5rem; font-size:0.9rem;">Install the package</p>
-      <pre><code>pip install fair-data-toolkit
-<span class="cm"># With notebook extras</span>
-pip install <span class="st">"fair-data-toolkit[notebooks]"</span></code></pre>
+    <div class="section-header">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Quick Start</div>
+      <div class="section-title">Install &amp; Get Scoring</div>
+      <p class="section-sub">Available on PyPI. Requires Python 3.9+.</p>
+    </div>
+    <div class="install-grid">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div></div><span class="code-title">Terminal</span></div>
+        <pre><code><span class="cm"># Install from PyPI</span>
+pip install fair-data-toolkit
 
-      <p style="color:var(--muted); margin-bottom:0.5rem; font-size:0.9rem;">Run a manual assessment</p>
-      <pre><code><span class="kw">from</span> fair_toolkit <span class="kw">import</span> ManualFAIRAssessor, ComplianceScore, EvidenceLevel
+<span class="cm"># With notebook extras</span>
+pip install <span class="st">"fair-data-toolkit[notebooks]"</span>
+
+<span class="cm"># From source</span>
+git clone https://github.com/alishahmohammadi22/fair-data-toolkit
+pip install -e <span class="st">".[notebooks]"</span></code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div></div><span class="code-title">Python</span></div>
+        <pre><code><span class="kw">from</span> fair_toolkit <span class="kw">import</span> ManualFAIRAssessor, ComplianceScore
 
 assessor = ManualFAIRAssessor(
     dataset_id=<span class="st">"DS-001"</span>,
-    dataset_title=<span class="st">"CAR-T Cell Viability Assay"</span>,
+    dataset_title=<span class="st">"CAR-T Viability Assay"</span>,
     assessed_by=<span class="st">"Ali Shahmohammadi"</span>,
 )
-
-assessor.score(<span class="st">"RDA-F1-01D"</span>, ComplianceScore.NOT_COMPLIANT,
-               evidence=<span class="st">"Only internal LIMS ID, no global PID"</span>)
-assessor.score(<span class="st">"RDA-F2-01M"</span>, ComplianceScore.PARTIALLY_COMPLIANT,
-               evidence=<span class="st">"Basic metadata present; assay conditions missing"</span>)
-
-assessor.print_scorecard()
+assessor.score(<span class="st">"RDA-F1-01D"</span>, ComplianceScore.NOT_BEING_CONSIDERED,
+    evidence=<span class="st">"Only internal LIMS ID, no global PID"</span>)
+assessor.score(<span class="st">"RDA-F2-01M"</span>, ComplianceScore.UNDER_CONSIDERATION,
+    evidence=<span class="st">"Basic metadata; assay conditions missing"</span>)
+assessor.score(<span class="st">"RDA-A1.2-01D"</span>, ComplianceScore.FULLY_IMPLEMENTED,
+    evidence=<span class="st">"Azure AD OAuth 2.0 controls access"</span>)
 
 result = assessor.build_result()
-print(<span class="fn">f</span><span class="st">"Overall FAIR score: {result.overall_score}%"</span>)
-
-<span class="cm"># Get Essential indicator gaps</span>
-gaps = result.get_gaps(EvidenceLevel.ESSENTIAL)
-<span class="kw">for</span> gap <span class="kw">in</span> gaps:
-    print(<span class="fn">f</span><span class="st">"  ✗ {gap.indicator_id}: {gap.indicator_name}"</span>)</code></pre>
+print(<span class="fn">f</span><span class="st">"Overall FAIR score: {result.overall_score}%"</span>)</code></pre>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── Web Application ── -->
-<section class="section" id="webapp" style="background: #10161c; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section class="section" id="webapp">
   <div class="container">
-    <div class="section-title">Web Application</div>
-    <div class="section-sub">A full-stack FAIR assessment interface built on <code>fair_toolkit</code> — designed for data stewards and scientists who want to run assessments without writing code.</div>
-
-    <div class="webapp-grid">
-      <div class="webapp-card">
-        <div class="webapp-icon">⚖️</div>
-        <div class="webapp-title">F / A / I / R Tabbed Interface</div>
-        <div class="webapp-desc">Each FAIR principle on its own colour-coded tab with a live completion percentage. Compliance colours update card borders and backgrounds in real time.</div>
-      </div>
-      <div class="webapp-card">
-        <div class="webapp-icon">💾</div>
-        <div class="webapp-title">Auto-Save — No Lost Work</div>
-        <div class="webapp-desc">Changes are debounced and persisted to PostgreSQL every 1.2 seconds automatically. Pick up any assessment where you left off, across sessions and users.</div>
-      </div>
-      <div class="webapp-card">
-        <div class="webapp-icon">📊</div>
-        <div class="webapp-title">Score Gauges &amp; Gap Analysis</div>
-        <div class="webapp-desc">Animated SVG circular gauges for Overall, F, A, I, R dimensions. Results page lists all unmet Essential-priority indicators with evidence and action notes.</div>
-      </div>
-      <div class="webapp-card">
-        <div class="webapp-icon">🔌</div>
-        <div class="webapp-title">REST API + OpenAPI Docs</div>
-        <div class="webapp-desc">Full FastAPI backend with interactive Swagger docs at <code>/docs</code>. Bulk score upsert, live FAIR scoring via <code>ManualFAIRAssessor</code> on every GET.</div>
-      </div>
-      <div class="webapp-card">
-        <div class="webapp-icon">🐳</div>
-        <div class="webapp-title">One-Command Deploy</div>
-        <div class="webapp-desc">Single <code>podman-compose up --build</code> starts PostgreSQL, FastAPI, and the Vue 3 SPA. The same compose file works with <code>docker compose</code>.</div>
-      </div>
-      <div class="webapp-card">
-        <div class="webapp-icon">🔗</div>
-        <div class="webapp-title">Single Source of Truth</div>
-        <div class="webapp-desc">The API imports <code>fair_toolkit</code> directly — all 41 indicators and scoring logic live in the Python package. The webapp is a pure UI layer with no duplication.</div>
-      </div>
+    <div class="section-header">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Web Application</div>
+      <div class="section-title">No-Code Assessment Interface</div>
+      <p class="section-sub">A full-stack web app wrapping <code class="ic">fair_toolkit</code> &mdash; for data stewards and scientists who prefer a UI over Python.</p>
     </div>
-
-    <!-- Architecture -->
-    <div style="margin-top: 2.5rem; display: flex; gap: 3rem; flex-wrap: wrap; align-items: flex-start;">
-      <div style="flex: 1; min-width: 280px;">
-        <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:1rem;">Architecture</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div class="feat-title">F / A / I / R Tabbed Interface</div><div class="feat-desc">Each FAIR principle on its own tab with live completion percentage. Compact rows expand on click for evidence and notes.</div></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></div><div class="feat-title">Auto-Save &mdash; No Lost Work</div><div class="feat-desc">Changes debounced and persisted to PostgreSQL every 1.2 seconds. Resume any assessment across sessions and users.</div></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="feat-title">Score Gauges &amp; Gap Analysis</div><div class="feat-desc">Animated SVG gauges for Overall, F, A, I, R. Results page lists all unmet Essential indicators with evidence and action notes.</div></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="feat-title">REST API + OpenAPI Docs</div><div class="feat-desc">Full FastAPI backend with interactive Swagger docs at <code class="ic">/docs</code>. Bulk score upsert and live scoring on every GET.</div></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div><div class="feat-title">One-Command Deploy</div><div class="feat-desc">Single <code class="ic">podman-compose up --build</code> starts PostgreSQL, FastAPI, and Vue 3 SPA. Compatible with Docker Compose.</div></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="feat-title">Single Source of Truth</div><div class="feat-desc">The API imports <code class="ic">fair_toolkit</code> directly &mdash; all 41 indicators and scoring logic live in the Python package. Zero duplication.</div></div>
+    </div>
+    <div class="arch-wrap">
+      <div style="flex:1;min-width:280px">
+        <div class="arch-qs-lbl">Architecture</div>
         <div class="arch-stack">
-          <div class="arch-layer arch-fe">
-            <span class="arch-label">Frontend</span>
-            <span class="arch-detail">Vue 3 · Vite · Tailwind CSS</span>
-            <span class="arch-port">:3000</span>
-          </div>
-          <div class="arch-connector">
-            <div class="arch-connector-line"></div>
-            <span class="arch-connector-label">nginx /api/* proxy</span>
-            <div class="arch-connector-line"></div>
-          </div>
-          <div class="arch-layer arch-api">
-            <span class="arch-label">API</span>
-            <span class="arch-detail">FastAPI · SQLAlchemy · fair_toolkit</span>
-            <span class="arch-port">:8080</span>
-          </div>
-          <div class="arch-connector">
-            <div class="arch-connector-line"></div>
-            <span class="arch-connector-label">psycopg2</span>
-            <div class="arch-connector-line"></div>
-          </div>
-          <div class="arch-layer arch-db">
-            <span class="arch-label">Database</span>
-            <span class="arch-detail">PostgreSQL 16 Alpine</span>
-            <span class="arch-port">:5432</span>
-          </div>
+          <div class="arch-layer arch-fe"><span class="arch-dot"></span><span class="arch-lbl">Frontend</span><span class="arch-detail">Vue 3 &middot; Vite &middot; Tailwind CSS</span><span class="arch-port">:3000</span></div>
+          <div class="arch-conn"><div class="arch-conn-line"></div><span class="arch-conn-lbl">nginx /api/* proxy</span><div class="arch-conn-line"></div></div>
+          <div class="arch-layer arch-api"><span class="arch-dot"></span><span class="arch-lbl">API</span><span class="arch-detail">FastAPI &middot; SQLAlchemy &middot; fair_toolkit</span><span class="arch-port">:8080</span></div>
+          <div class="arch-conn"><div class="arch-conn-line"></div><span class="arch-conn-lbl">psycopg2</span><div class="arch-conn-line"></div></div>
+          <div class="arch-layer arch-db"><span class="arch-dot"></span><span class="arch-lbl">Database</span><span class="arch-detail">PostgreSQL 16 Alpine</span><span class="arch-port">:5432</span></div>
         </div>
       </div>
-
-      <!-- Quick start -->
-      <div style="flex: 2; min-width: 320px;">
-        <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:0.6rem;">Quick Start</p>
-        <pre><code>git clone https://github.com/alishahmohammadi22/fair-data-toolkit.git
+      <div class="arch-qs">
+        <div class="arch-qs-lbl">Quick Start</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div></div><span class="code-title">Terminal</span></div>
+          <pre><code>git clone https://github.com/alishahmohammadi22/fair-data-toolkit
 cd fair-data-toolkit/webapp
-podman-compose up --build      <span class="cm"># or: docker compose up --build</span>
+podman-compose up --build  <span class="cm"># or: docker compose up --build</span>
 
 <span class="cm"># Frontend:  http://localhost:3000</span>
 <span class="cm"># API docs:  http://localhost:8080/docs</span>
 <span class="cm"># Health:    http://localhost:8080/api/health</span></code></pre>
-
-        <div class="tag-row" style="margin-top:1rem;">
-          <span class="tag">Vue 3.4</span>
-          <span class="tag">vue-router 4</span>
-          <span class="tag">Tailwind CSS 3</span>
-          <span class="tag">Vite 5</span>
-          <span class="tag green">FastAPI</span>
-          <span class="tag green">SQLAlchemy 2.0</span>
-          <span class="tag green">Python 3.11</span>
-          <span class="tag purple">PostgreSQL 16</span>
-          <span class="tag purple">Podman / Docker</span>
-          <span class="tag yellow">nginx</span>
         </div>
-
-        <div style="margin-top:1.2rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
-          <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/tree/main/webapp" class="btn btn-outline" style="font-size:0.85rem; padding:0.5rem 1rem;">View Source →</a>
-          <a href="https://github.com/alishahmohammadi22/fair-data-toolkit#web-application" class="btn btn-outline" style="font-size:0.85rem; padding:0.5rem 1rem;">Full Docs →</a>
+        <div class="tag-row" style="margin-top:1rem"><span class="tag blue">Vue 3.4</span><span class="tag blue">Vite 5</span><span class="tag blue">Tailwind CSS 3</span><span class="tag green">FastAPI</span><span class="tag green">SQLAlchemy 2.0</span><span class="tag green">Python 3.11</span><span class="tag">PostgreSQL 16</span><span class="tag">Podman / Docker</span><span class="tag">nginx</span></div>
+        <div style="margin-top:1.25rem;display:flex;gap:.75rem;flex-wrap:wrap">
+          <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/tree/main/webapp" target="_blank" rel="noopener" class="btn btn-outline" style="font-size:.85rem;padding:.5rem 1rem">View Source &rarr;</a>
+          <a href="https://github.com/alishahmohammadi22/fair-data-toolkit#web-application" target="_blank" rel="noopener" class="btn btn-outline" style="font-size:.85rem;padding:.5rem 1rem">Full Docs &rarr;</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Roadmap ── -->
-<section class="section" id="roadmap">
+<section class="section section-alt" id="roadmap">
   <div class="container">
-    <div class="section-title">Roadmap</div>
-    <div class="section-sub">Phase 1 delivers the manual assessment toolkit and articles. Phase 2 adds agentic AI scoring.</div>
+    <div class="section-header">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Roadmap</div>
+      <div class="section-title">What&rsquo;s Built. What&rsquo;s Next.</div>
+      <p class="section-sub">Phase 1 delivers the manual assessment toolkit. Phase 2 adds agentic AI scoring.</p>
+    </div>
     <div class="roadmap-grid">
-      <div class="phase-card phase-1 done">
-        <div class="phase-label">Phase 1 — Current Release</div>
+      <div class="phase-card phase-done">
+        <div class="phase-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Phase 1 &mdash; Released (v0.2.0)</div>
         <h3>Manual Assessment Toolkit</h3>
         <ul>
-          <li>All 41 RDA FAIR Maturity Model indicators as Pydantic models</li>
-          <li>Pistoia Alliance FAIR Maturity Matrix: 6 levels (L0–L5) × 7 organisational dimensions</li>
-          <li>ManualFAIRAssessor with Rich scorecard output</li>
-          <li>Gap analysis by Essential / Important / Useful priority</li>
-          <li>Five-article Jupyter notebook series</li>
-          <li>CSV and JSON export of assessment results</li>
-          <li>Vue 3 + FastAPI + PostgreSQL web application</li>
-          <li>Published to Zenodo (DOI: 10.5281/zenodo.20274083)</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All 41 RDA FAIR Maturity indicators as Pydantic models</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pistoia Alliance FAIR Maturity Matrix: 6 levels &times; 7 dimensions</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ManualFAIRAssessor with priority-weighted scoring</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Gap analysis by Essential / Important / Useful priority</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Five-article Jupyter notebook series</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>CSV and JSON export of assessment results</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Vue 3 + FastAPI + PostgreSQL web application</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Published to Zenodo (DOI: 10.5281/zenodo.20274083)</li>
         </ul>
       </div>
-      <div class="phase-card phase-2">
-        <div class="phase-label">Phase 2 — In Development</div>
+      <div class="phase-card phase-next">
+        <div class="phase-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Phase 2 &mdash; In Development</div>
         <h3>Agentic FAIR Scorer (fair_agent/)</h3>
         <ul>
-          <li>MetadataFetcherAgent — parses any REST API (JSON-LD, DCAT, Dublin Core)</li>
-          <li>StructuralAssessorAgent — auto-scores ~20 structural indicators</li>
-          <li>ContentAnalysisAgent (GPT) — scores semantic indicators from text</li>
-          <li>ExternalVerifierAgent — validates ontology terms via BioPortal/OLS</li>
-          <li>GovernanceReporterAgent — generates remediation roadmap</li>
-          <li>Full LangGraph pipeline — input any API, output FAIRAssessmentResult</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>MetadataFetcherAgent &mdash; parses any REST API (JSON-LD, DCAT, Dublin Core)</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>StructuralAssessorAgent &mdash; auto-scores ~20 structural indicators</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>ContentAnalysisAgent (GPT) &mdash; scores semantic indicators from text</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>ExternalVerifierAgent &mdash; validates ontology terms via BioPortal/OLS</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>GovernanceReporterAgent &mdash; generates remediation roadmap</li>
+          <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Full LangGraph pipeline &mdash; input any API, output FAIRAssessmentResult</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Footer ── -->
 <footer>
-  <p>
-    <strong>fair-data-toolkit</strong> ·
-    Built by <a href="https://alishahmohammadi22.github.io">Ali Shahmohammadi, Ph.D.</a> ·
-    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit">GitHub</a> ·
-    MIT License
-  </p>
-  <p style="margin-top:0.5rem;">
-    Based on the <a href="https://doi.org/10.15497/rda00050">RDA FAIR Data Maturity Model</a>
-    and the <a href="https://www.pistoiaalliance.org/projects/current-projects/fair-data/">Pistoia Alliance FAIR Maturity Matrix</a>.
-    · DOI: <a href="https://doi.org/10.5281/zenodo.20274083">10.5281/zenodo.20274083</a>
-  </p>
+  <p><strong>fair-data-toolkit v0.2.0</strong> &nbsp;&middot;&nbsp; Built by <a href="https://github.com/alishahmohammadi22">Ali Shahmohammadi, Ph.D.</a> &nbsp;&middot;&nbsp; MIT License</p>
+  <div class="footer-links">
+    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://doi.org/10.5281/zenodo.20274083" target="_blank" rel="noopener">Zenodo DOI</a>
+    <a href="https://doi.org/10.15497/rda00050" target="_blank" rel="noopener">RDA FAIR Model</a>
+    <a href="https://www.pistoiaalliance.org/projects/current-projects/fair-data/" target="_blank" rel="noopener">Pistoia Alliance</a>
+    <a href="https://github.com/alishahmohammadi22/fair-data-toolkit/releases/tag/v0.2.0" target="_blank" rel="noopener">Release Notes</a>
+  </div>
 </footer>
 
 </body>
