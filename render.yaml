@@ -9,7 +9,6 @@ services:
   # ── FastAPI + SQLAlchemy backend ──────────────────────────────────────────
   - type: web
     name: fair-toolkit-api
-    plan: free
     env: docker
     # Build context is repo root so the Dockerfile can copy fair_toolkit/ package
     dockerfilePath: webapp/api/Dockerfile
@@ -22,7 +21,6 @@ services:
   # ── Vue 3 SPA (static site) ───────────────────────────────────────────────
   - type: web
     name: fair-toolkit-app
-    plan: free
     env: static
     rootDir: webapp/frontend
     buildCommand: npm install && npm run build
