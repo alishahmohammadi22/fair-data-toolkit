@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="FAIR Toolkit API",
-    version="0.1.0",
+    version="0.2.0",
     description="REST API for FAIR Data Maturity Assessment",
     lifespan=lifespan,
 )
@@ -32,4 +32,4 @@ app.include_router(assessments.router, prefix="/api/assessments", tags=["Assessm
 
 @app.get("/api/health", tags=["Health"])
 def health():
-    return {"status": "ok", "version": "0.1.0"}
+    return {"status": "ok", "version": "0.2.0"}

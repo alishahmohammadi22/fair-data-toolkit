@@ -17,6 +17,7 @@ from fair_toolkit.models.rda_indicators import (
     ComplianceScore,
     EvidenceLevel,
     SCORE_WEIGHT,
+    PRIORITY_WEIGHT,
     RDAIndicator,
 )
 
@@ -37,8 +38,14 @@ class IndicatorScore(BaseModel):
     )
 
     @property
+    def priority_weight(self) -> int:
+        """Points this indicator is worth (Essential=3, Important=2, Useful=1)."""
+        return PRIORITY_WEIGHT.get(self.priority, 1)
+
+    @property
     def numeric_score(self) -> float:
-        return SCORE_WEIGHT.get(self.compliance, 0.0)
+        """Actual points earned = priority_weight × compliance_fraction."""
+        return self.priority_weight * SCORE_WEIGHT.get(self.compliance, 0.0)
 
     @property
     def is_assessed(self) -> bool:
@@ -62,20 +69,21 @@ class FAIRDimensionScore(BaseModel):
 
     @property
     def compliant_count(self) -> int:
+        """Number of fully-implemented indicators."""
         return sum(
             1 for s in self.indicator_scores
-            if s.compliance == ComplianceScore.COMPLIANT
+            if s.compliance == ComplianceScore.FULLY_IMPLEMENTED
         )
 
     @property
     def raw_score(self) -> float:
-        """Sum of numeric scores for assessed indicators."""
+        """Actual weighted points earned (assessed indicators only)."""
         return sum(s.numeric_score for s in self.indicator_scores if s.is_assessed)
 
     @property
     def max_score(self) -> float:
-        """Maximum possible score (all assessed indicators fully compliant)."""
-        return float(self.assessed_indicators)
+        """Maximum possible weighted points (sum of priority weights for assessed indicators)."""
+        return float(sum(s.priority_weight for s in self.indicator_scores if s.is_assessed))
 
     @property
     def percentage(self) -> float:
@@ -86,14 +94,14 @@ class FAIRDimensionScore(BaseModel):
 
     @property
     def essential_compliance(self) -> float:
-        """% of ESSENTIAL indicators that are compliant."""
+        """% of ESSENTIAL indicators that are fully implemented."""
         essentials = [
             s for s in self.indicator_scores
             if s.priority == EvidenceLevel.ESSENTIAL and s.is_assessed
         ]
         if not essentials:
             return 0.0
-        compliant = sum(1 for s in essentials if s.compliance == ComplianceScore.COMPLIANT)
+        compliant = sum(1 for s in essentials if s.compliance == ComplianceScore.FULLY_IMPLEMENTED)
         return round((compliant / len(essentials)) * 100, 1)
 
 
@@ -165,7 +173,7 @@ class FAIRAssessmentResult(BaseModel):
                 if (
                     priority_order.get(s.priority, 99) <= threshold
                     and s.is_assessed
-                    and s.compliance != ComplianceScore.COMPLIANT
+                    and s.compliance != ComplianceScore.FULLY_IMPLEMENTED
                 ):
                     gaps.append(s)
         return sorted(gaps, key=lambda x: priority_order.get(x.priority, 99))

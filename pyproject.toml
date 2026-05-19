@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fair-data-toolkit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Python toolkit for assessing FAIR data maturity using the RDA FAIR Maturity Model and Pistoia Alliance FAIR Maturity Matrix"
 readme = "README.md"
 requires-python = ">=3.9"

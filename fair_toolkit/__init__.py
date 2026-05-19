@@ -36,7 +36,7 @@ from fair_toolkit.models.scoring import (
 )
 from fair_toolkit.assessors.manual_assessor import ManualFAIRAssessor
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
     "FAIRPrinciple",
     "FAIRSubPrinciple",

@@ -61,7 +61,7 @@ const scoreColor = (score) => {
         How FAIR is your data?
       </h1>
       <p class="text-gray-500 max-w-xl mx-auto">
-        Answer questions across the 38 RDA FAIR Maturity Indicators and get an instant
+        Answer questions across the 41 RDA FAIR Maturity Indicators and get an instant
         scorecard, gap analysis, and remediation roadmap.
       </p>
     </div>

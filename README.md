@@ -77,12 +77,12 @@ assessor = ManualFAIRAssessor(
     assessed_by="Ali Shahmohammadi",
 )
 
-# Score indicators
-assessor.score("RDA-F1-01D", ComplianceScore.NOT_COMPLIANT,
+# Score indicators using the 4-level implementation status model
+assessor.score("RDA-F1-01D", ComplianceScore.NOT_BEING_CONSIDERED,
                evidence="Only internal LIMS ID, no global PID")
-assessor.score("RDA-F2-01M", ComplianceScore.PARTIALLY_COMPLIANT,
+assessor.score("RDA-F2-01M", ComplianceScore.UNDER_CONSIDERATION,
                evidence="Basic metadata present; assay conditions missing")
-assessor.score("RDA-A1.2-01M", ComplianceScore.COMPLIANT,
+assessor.score("RDA-A1.2-01D", ComplianceScore.FULLY_IMPLEMENTED,
                evidence="Azure AD OAuth 2.0 controls access")
 
 # Generate scorecard

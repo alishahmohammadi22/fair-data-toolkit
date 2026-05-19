@@ -60,21 +60,34 @@ class EvidenceLevel(str, Enum):
 
 
 class ComplianceScore(str, Enum):
-    NOT_APPLICABLE = "not_applicable"
-    NOT_ASSESSED = "not_assessed"
-    NOT_COMPLIANT = "not_compliant"          # 0 %
-    PARTIALLY_COMPLIANT = "partially_compliant"  # ~50 %
-    COMPLIANT = "compliant"                  # 100 %
+    NOT_APPLICABLE        = "not_applicable"         # excluded from score
+    NOT_ASSESSED          = "not_assessed"           # excluded from score
+    FULLY_IMPLEMENTED     = "fully_implemented"      # 100 %
+    IN_IMPLEMENTATION     = "in_implementation"      #  50 %
+    UNDER_CONSIDERATION   = "under_consideration"    #  10 %
+    NOT_BEING_CONSIDERED  = "not_being_considered"   #   0 %
 
 
-# Numeric weight per compliance level (0–4 scale used by RDA)
+# Fraction of indicator weight earned per compliance level
 SCORE_WEIGHT: dict[ComplianceScore, float] = {
-    ComplianceScore.NOT_APPLICABLE: 0.0,
-    ComplianceScore.NOT_ASSESSED: 0.0,
-    ComplianceScore.NOT_COMPLIANT: 0.0,
-    ComplianceScore.PARTIALLY_COMPLIANT: 0.5,
-    ComplianceScore.COMPLIANT: 1.0,
+    ComplianceScore.NOT_APPLICABLE:       0.0,
+    ComplianceScore.NOT_ASSESSED:         0.0,
+    ComplianceScore.FULLY_IMPLEMENTED:    1.0,
+    ComplianceScore.IN_IMPLEMENTATION:    0.5,
+    ComplianceScore.UNDER_CONSIDERATION:  0.1,
+    ComplianceScore.NOT_BEING_CONSIDERED: 0.0,
 }
+
+# Priority weights: Essential=3, Important=2, Useful=1
+PRIORITY_WEIGHT: dict["EvidenceLevel", int] = {}  # populated after EvidenceLevel is defined
+
+
+# Populate PRIORITY_WEIGHT now that EvidenceLevel is defined
+PRIORITY_WEIGHT.update({
+    EvidenceLevel.ESSENTIAL:  3,
+    EvidenceLevel.IMPORTANT:  2,
+    EvidenceLevel.USEFUL:     1,
+})
 
 
 # ── Model ──────────────────────────────────────────────────────────────────
@@ -239,6 +252,19 @@ RDA_INDICATORS: list[RDAIndicator] = [
         ),
     ),
     RDAIndicator(
+        id="RDA-A1-02D",
+        principle=FAIRPrinciple.A,
+        sub_principle=FAIRSubPrinciple.A1,
+        scope=IndicatorScope.DATA,
+        priority=EvidenceLevel.ESSENTIAL,
+        name="Data can be accessed manually (i.e. with human intervention)",
+        question="Can the data be accessed manually, i.e. with human intervention?",
+        guidance=(
+            "Standard terms and language are used to describe provenance for data and metadata."
+        ),
+        example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
+    ),
+    RDAIndicator(
         id="RDA-A1-02M",
         principle=FAIRPrinciple.A,
         sub_principle=FAIRSubPrinciple.A1,
@@ -258,15 +284,42 @@ RDA_INDICATORS: list[RDAIndicator] = [
         principle=FAIRPrinciple.A,
         sub_principle=FAIRSubPrinciple.A1,
         scope=IndicatorScope.DATA,
-        priority=EvidenceLevel.IMPORTANT,
-        name="Data is retrievable by its identifier",
-        question="Can the data be retrieved using its PID via a standardised protocol?",
+        priority=EvidenceLevel.ESSENTIAL,
+        name="Data identifier resolves to a digital object",
+        question="Does the data identifier resolve to a digital object?",
         guidance=(
-            "Resolving the data PID should deliver the data or a clear, machine-readable landing "
-            "page explaining how to access it. Protocols: HTTP, FTP, SFTP, S3, GridFTP. "
-            "Manual request-only access is PARTIAL compliance."
+            "If available, metadata follows a known, accepted recording template "
+            "(e.g., a community standard or repository schema)."
         ),
-        example="GET https://doi.org/10.5281/zenodo.7654321 resolves to a landing page with a download link.",
+        example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
+    ),
+    RDAIndicator(
+        id="RDA-A1-03M",
+        principle=FAIRPrinciple.A,
+        sub_principle=FAIRSubPrinciple.A1,
+        scope=IndicatorScope.METADATA,
+        priority=EvidenceLevel.ESSENTIAL,
+        name="Metadata identifier resolves to a metadata record",
+        question="Does the metadata identifier resolve to a metadata record?",
+        guidance=(
+            "If available, data follows a known, accepted recording template "
+            "(e.g., a single source experimental design)."
+        ),
+        example="Use of schema.org terms, FAIRsharing.org (if possible), etc.",
+    ),
+    RDAIndicator(
+        id="RDA-A1-04D",
+        principle=FAIRPrinciple.A,
+        sub_principle=FAIRSubPrinciple.A1,
+        scope=IndicatorScope.DATA,
+        priority=EvidenceLevel.ESSENTIAL,
+        name="Data is accessible through standardised protocol",
+        question="Can the data be accessed through a standardised protocol?",
+        guidance=(
+            "A process is included that allows a sufficiently credentialed user to load a new "
+            "file/dataset for viewing while assigning appropriate metadata for the backend."
+        ),
+        example='"Upload new data" button backed by a standard HTTP/REST API.',
     ),
     RDAIndicator(
         id="RDA-A1-04M",
@@ -282,6 +335,21 @@ RDA_INDICATORS: list[RDAIndicator] = [
             "a well-formed metadata record."
         ),
         example="curl -H 'Accept: application/ld+json' https://zenodo.org/api/records/7654321 returns JSON-LD.",
+    ),
+
+    RDAIndicator(
+        id="RDA-A1-05D",
+        principle=FAIRPrinciple.A,
+        sub_principle=FAIRSubPrinciple.A1,
+        scope=IndicatorScope.DATA,
+        priority=EvidenceLevel.IMPORTANT,
+        name="Data can be accessed automatically (i.e. by a computer program)",
+        question="Can the data be accessed automatically, i.e. by a computer program?",
+        guidance=(
+            "Path of production, use, and contents for data and metadata are included in metadata: "
+            "created by, modified by, created on, source, etc."
+        ),
+        example='{"Created By":"A Person", "Modified By":"Another Person", "Created On":"01/01/2024", "Source":"Internal"}',
     ),
 
     # ── A1.1: Protocol is open, free, universally implementable ──────────
@@ -316,24 +384,6 @@ RDA_INDICATORS: list[RDAIndicator] = [
     ),
 
     # ── A1.2: Protocol allows authentication/authorisation ────────────────
-    RDAIndicator(
-        id="RDA-A1.2-01M",
-        principle=FAIRPrinciple.A,
-        sub_principle=FAIRSubPrinciple.A1_2,
-        scope=IndicatorScope.METADATA,
-        priority=EvidenceLevel.USEFUL,
-        name="Metadata accessible via access-controlled protocol",
-        question=(
-            "If access is controlled, does the protocol support an authentication and "
-            "authorisation procedure (e.g., OAuth, API key, DAC request)?"
-        ),
-        guidance=(
-            "Not all data can be open. This indicator is about having a defined, "
-            "standards-based access control mechanism rather than ad-hoc sharing. "
-            "Mark 'not applicable' for fully open datasets."
-        ),
-        example="A clinical trials dataset is accessible via OAuth 2.0 after a Data Access Committee approval.",
-    ),
     RDAIndicator(
         id="RDA-A1.2-01D",
         principle=FAIRPrinciple.A,
